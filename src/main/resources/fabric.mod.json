@@ -2,16 +2,16 @@
   "schemaVersion": 1,
   "id": "nub-lib",
   "version": "${version}",
-  "name": "nub-lib",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "NUB Lib",
+  "description": "Library with common functionality between my mods",
   "authors": [
-    "Me!"
+    "NUB31"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://oliste.no/",
+    "sources": "https://github.com/NUB31/nub-lib"
   },
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/nub-lib/icon.png",
   "environment": "*",
   "entrypoints": {
@@ -20,6 +20,9 @@
     ],
     "client": [
       "com.nublib.NubLibClient"
+    ],
+    "modmenu": [
+      "com.nublib.modmenu.ModMenu"
     ]
   },
   "mixins": [
@@ -36,6 +39,6 @@
     "fabric-api": "*"
   },
   "suggests": {
-    "another-mod": "*"
+    "modmenu": "*"
   }
 }

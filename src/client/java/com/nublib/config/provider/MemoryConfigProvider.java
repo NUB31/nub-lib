@@ -7,6 +7,11 @@ public class MemoryConfigProvider implements IConfigProvider {
 	private final HashMap<String, String> config = new HashMap<>();
 
 	@Override
+	public HashMap<String, String> all() {
+		return config;
+	}
+
+	@Override
 	public Optional<String> get(String key) {
 		var value = config.get(key);
 		return Optional.ofNullable(value);

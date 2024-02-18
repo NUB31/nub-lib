@@ -47,6 +47,11 @@ public class FileConfigProvider implements IConfigProvider {
 	}
 
 	@Override
+	public HashMap<String, String> all() {
+		return config;
+	}
+
+	@Override
 	public Optional<String> get(String key) {
 		var value = config.get(key);
 		return Optional.ofNullable(value);
