@@ -22,7 +22,7 @@ public class FileConfigProvider implements IConfigProvider {
 			if (isNewFile) save();
 			else loadFile();
 		} catch (IOException e) {
-			NubLib.LOGGER.error("Failed to load nubs-qol configuration file", e);
+			NubLib.LOGGER.error("Failed to load configuration file", e);
 		}
 	}
 
