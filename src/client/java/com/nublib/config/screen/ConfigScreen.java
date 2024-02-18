@@ -12,6 +12,8 @@ import net.minecraft.text.Text;
 @Environment(EnvType.CLIENT)
 public class ConfigScreen extends GameOptionsScreen {
 	private final IConfigProvider configProvider;
+	private final int configListWidth = 320;
+	private ConfigDetailsWidget configDetails;
 
 	public ConfigScreen(Screen parent, IConfigProvider configProvider) {
 		super(parent, MinecraftClient.getInstance().options, Text.of("Mod configuration"));
@@ -20,16 +22,25 @@ public class ConfigScreen extends GameOptionsScreen {
 
 	@Override
 	protected void init() {
-		ConfigListWidget container = new ConfigListWidget(300, height);
+		ConfigListWidget configList = new ConfigListWidget(configListWidth, height - 20, 10, this::setDetailsPane);
+		configList.setX(10);
 		ButtonWidget closeButton = ButtonWidget
 				.builder(Text.literal("Close"), action -> close())
 				.size(60, 20)
 				.position(width - 70, height - 30)
 				.build();
 
-		configProvider.all().forEach((k, v) -> container.children().add(new ConfigPropertyWidget(textRenderer, k, v, configProvider)));
+		configProvider.all().forEach((k, v) -> configList.children().add(new ConfigWidget(textRenderer, k, v, configProvider)));
 
-		addDrawableChild(container);
+		configDetails = new ConfigDetailsWidget(configListWidth + 20, 10, width - configListWidth - 30, height - 50, textRenderer);
+
+		addDrawableChild(configList);
 		addDrawableChild(closeButton);
+		addDrawableChild(configDetails);
+	}
+
+	private void setDetailsPane(ConfigWidget configWidget) {
+		configDetails.setKey(configWidget.getKey());
+		configDetails.setDescription(configWidget.getDescription());
 	}
 }
