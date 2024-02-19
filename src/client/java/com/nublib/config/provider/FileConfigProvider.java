@@ -10,13 +10,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 public class FileConfigProvider implements IConfigProvider {
 	private final HashMap<String, String> config = new HashMap<>();
 	private final File file;
+	private final Consumer<ConfigKeyValueString> onSet;
 
-	private FileConfigProvider(File file) {
+	private FileConfigProvider(File file, Consumer<ConfigKeyValueString> onSave) {
 		this.file = file;
+		this.onSet = onSave;
+
 		try {
 			boolean isNewFile = file.createNewFile();
 			if (isNewFile) save();
@@ -26,9 +30,14 @@ public class FileConfigProvider implements IConfigProvider {
 		}
 	}
 
-	public static FileConfigProvider create(String fileName) {
+	public static FileConfigProvider create(String fileName, Consumer<ConfigKeyValueString> onSet) {
 		File file = FabricLoader.getInstance().getConfigDir().resolve(String.format("%s.properties", fileName)).toFile();
-		return new FileConfigProvider(file);
+		return new FileConfigProvider(file, onSet);
+	}
+
+	public static FileConfigProvider create(String fileName) {
+		return create(fileName, (v) -> {
+		});
 	}
 
 	private void loadFile() throws IOException {
@@ -60,6 +69,7 @@ public class FileConfigProvider implements IConfigProvider {
 	@Override
 	public void set(String key, String value) {
 		config.put(key, value);
+		onSet.accept(new ConfigKeyValueString(key, value));
 
 		try {
 			save();
