@@ -15,9 +15,9 @@ import java.util.function.Consumer;
 public class FileConfigProvider implements IConfigProvider {
 	private final HashMap<String, String> config = new HashMap<>();
 	private final File file;
-	private final Consumer<ConfigKeyValueString> onSet;
+	private final Consumer<ConfigKeyValue> onSet;
 
-	private FileConfigProvider(File file, Consumer<ConfigKeyValueString> onSave) {
+	private FileConfigProvider(File file, Consumer<ConfigKeyValue> onSave) {
 		this.file = file;
 		this.onSet = onSave;
 
@@ -30,7 +30,7 @@ public class FileConfigProvider implements IConfigProvider {
 		}
 	}
 
-	public static FileConfigProvider create(String fileName, Consumer<ConfigKeyValueString> onSet) {
+	public static FileConfigProvider create(String fileName, Consumer<ConfigKeyValue> onSet) {
 		File file = FabricLoader.getInstance().getConfigDir().resolve(String.format("%s.properties", fileName)).toFile();
 		return new FileConfigProvider(file, onSet);
 	}
@@ -46,11 +46,11 @@ public class FileConfigProvider implements IConfigProvider {
 		reader.forEachRemaining(line -> parseLine(line).ifPresent(kvp -> config.put(kvp.key, kvp.value)));
 	}
 
-	private Optional<ConfigKeyValueString> parseLine(String line) {
+	private Optional<ConfigKeyValue> parseLine(String line) {
 		var cleansed = line.split("#")[0];
 		String[] kvp = cleansed.split("=");
 		if (kvp.length == 2) {
-			return Optional.of(new ConfigKeyValueString(kvp[0].trim(), kvp[1].trim()));
+			return Optional.of(new ConfigKeyValue(kvp[0].trim(), kvp[1].trim()));
 		}
 		return Optional.empty();
 	}
@@ -69,7 +69,7 @@ public class FileConfigProvider implements IConfigProvider {
 	@Override
 	public void set(String key, String value) {
 		config.put(key, value);
-		onSet.accept(new ConfigKeyValueString(key, value));
+		onSet.accept(new ConfigKeyValue(key, value));
 
 		try {
 			save();
