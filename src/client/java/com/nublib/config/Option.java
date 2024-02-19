@@ -43,6 +43,10 @@ public class Option<T> {
 				.orElse(defaultValue);
 	}
 
+	public String getKey() {
+		return key;
+	}
+
 	public void set(T value) {
 		provider.set(key, serializer.serialize(value));
 		onSet.accept(value);
