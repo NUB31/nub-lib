@@ -3,13 +3,30 @@ package com.nublib.config;
 import com.nublib.config.provider.IConfigProvider;
 import com.nublib.config.serialization.ISerializer;
 
-public class ConfigProperty<T> {
+import java.util.function.Consumer;
+
+public class Option<T> {
 	private final IConfigProvider provider;
 	private final String key;
 	private final T defaultValue;
 	private final ISerializer<T> serializer;
+	private Consumer<T> onSet = (v) -> {
+	};
 
-	public ConfigProperty(IConfigProvider provider, String key, T defaultValue, ISerializer<T> serializer) {
+	public Option(IConfigProvider provider, String key, T defaultValue, ISerializer<T> serializer, Consumer<T> onSet) {
+		this.provider = provider;
+		this.key = key;
+		this.defaultValue = defaultValue;
+		this.serializer = serializer;
+
+		if (provider.get(key).isEmpty()) {
+			provider.set(key, serializer.serialize(defaultValue));
+		}
+
+		this.onSet = onSet;
+	}
+
+	public Option(IConfigProvider provider, String key, T defaultValue, ISerializer<T> serializer) {
 		this.provider = provider;
 		this.key = key;
 		this.defaultValue = defaultValue;
@@ -28,5 +45,6 @@ public class ConfigProperty<T> {
 
 	public void set(T value) {
 		provider.set(key, serializer.serialize(value));
+		onSet.accept(value);
 	}
 }

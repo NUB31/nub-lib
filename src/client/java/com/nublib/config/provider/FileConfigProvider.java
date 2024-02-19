@@ -37,11 +37,11 @@ public class FileConfigProvider implements IConfigProvider {
 		reader.forEachRemaining(line -> parseLine(line).ifPresent(kvp -> config.put(kvp.key, kvp.value)));
 	}
 
-	private Optional<KeyValue<String, String>> parseLine(String line) {
+	private Optional<ConfigKeyValueString> parseLine(String line) {
 		var cleansed = line.split("#")[0];
 		String[] kvp = cleansed.split("=");
 		if (kvp.length == 2) {
-			return Optional.of(new KeyValue<>(kvp[0].trim(), kvp[1].trim()));
+			return Optional.of(new ConfigKeyValueString(kvp[0].trim(), kvp[1].trim()));
 		}
 		return Optional.empty();
 	}
