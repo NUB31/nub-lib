@@ -3,6 +3,7 @@ package com.nublib.config.sync;
 import com.nublib.NubLib;
 import com.nublib.config.Config;
 import com.nublib.networking.ServerModMessages;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 import java.io.*;
@@ -14,8 +15,12 @@ public class ConfigSync<T extends Config> {
 
 	public ConfigSync(String id) {
 		ServerPlayNetworking.registerGlobalReceiver(ServerModMessages.createSynConfigIdentifier(id), (server, player, handler, buf, responseSender) -> {
-			NubLib.LOGGER.info(String.format("SYNC for \"%s\"", id));
 			configs.put(player.getUuid(), deserialize(buf.readByteArray()));
+			NubLib.LOGGER.info(String.format("SYNCED \"%s\"", player.getUuid()));
+		});
+		ServerPlayConnectionEvents.DISCONNECT.register((networkHandler, minecraftServer) -> {
+			configs.remove(networkHandler.player.getUuid());
+			NubLib.LOGGER.info(String.format("REMOVED \"%s\" from config sync", networkHandler.player.getUuid()));
 		});
 	}
 
