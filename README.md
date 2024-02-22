@@ -99,7 +99,7 @@ private void doSomethingOnTheServer() {
 
 ### Mod menu integration
 
-To get integration with modmenu, createa a new class that implements the ModMenuIntegration interface and override the configProvider method.
+To get integration with modmenu, create a new class that implements the ModMenuIntegration interface and override the configProvider method.
 In the configProvider method, return the `ConfigProvider` class that modmenu should use for its configuration screen
 
 ```java
