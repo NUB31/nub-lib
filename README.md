@@ -1,48 +1,107 @@
 # Library for common functionality between mods
 ## Configuration classes/interfaces
-### Put your configuration somewhere
-Create some ConfigProperty<T> members where you want to keep your configuration.
-In this case i create a Config class.
+### ConfigProviders
+The abstract `ConfigProvider` class is responsible for your configuation storage.
 
-The ConfigProperty class taks inn an `IConfigProvider`, key name (name that the `ConfigProvider` uses for lookups), default value and a serializer.
+This library includes two ConfigProviders by default, `FileConfigProvider` and `MemoryConfigProvider`. 
 
-`BooleanSerializer`, `StringSerializer` and `IntSerializer` is currently included.
-If you want to create your own serializer, inherit from the `ISerializer` class
+### Configuration class
+To create a configuration inherit from the abstract `Config` or `SyncableConfig` class and create any number of `Option` properties on the class.
+The `SyncableConfig` class only works for the client, and will send a synchronization packet when a coniguration has changed in the `ConfigProvider`
+
+The `Option` property is responsible for "translating" the data from your `ConfigProvider`.
+The `Option` class takes a `ConfigProvider`, key, default value and a `ISerializer`
+
+The `ConfigProvider` argument tells the `Option` where it should retrieve the configuration key.
+
+The default value will be used to create a key-value pair on the `ConfigProvider` if the key is not already present. It will also be used as a backup-value if parsing the value from the `ConfigProvider` fails.
+
+The key defines which key of the key-value pairs on the `ConfigProvider` should be retrieved and parsed.
+
+The `ISerializer` is used to parse the string value on the `ConfigProvider` to the generic type parameter on the `Option` class. A `BooleanSerializer`, `StringSerializer` and `IntSerializer` is currently included.
+If you want to create your own serializer, inherit from the `ISerializer` class.
+
+#### Examples:
+##### Create the config
 ```java
-// Config.java
-public class Config {
-  public final ConfigProperty<Boolean> featureEnabled;
-  public final ConfigProperty<String> itemName;
-
-  public Config(IConfigProvider configProvider) {
-      this.featureEnabled = new ConfigProperty<>(configProvider, "featureEnabled", true, new BooleanSerializer());
-      this.itemName = new ConfigProperty<>(configProvider, "itemName", "UwU", new StringSerializer());
+public class ModConfig extends Config {
+  public final Option<Boolean> featureEnabled = new Option<>(provider, "featureEnabled", true, new BooleanSerializer());
+  public final Option<String> featureName = new Option<>(provider, "featureName", "SuperDuperName", new StringSerializer());
+  
+  public ModConfig(ConfigProvider provider) {
+    super(provider);
   }
-} 
-```
-### Initialize configuration
-Initialize configuration with an IConfigProvider
-
-This library includes two ConfigProviders by default, FileConfigProvider and MemoryConfigProvider. If you want to create your own ConfigProvider, inherit from the IConfigProvider class
-```java
-// ModInitializer.java
-public class YourMod implements ModInitializer {
-  public static final Config CONFIG = new Config(FileConfigProvider.create("nubs-qol"));
-
-  @Override
-  public void onInitialize() {}
 }
 ```
 
-### Use your config
+##### Initialize the config
+```java
+// ModInitializer.java
+public class YourModClient implements ClientModInitializer {
+  public static final ConfigProvider CONFIG_PROVIDER = FileConfigProvider.create("nubs-qol");
+  public static final Config CONFIG = new ModConfig(CONFIG_PROVIDER);
+  
+  @Override
+  public void onInitializeClient() {}
+}
+```
+
+##### Use your config
 ```java
 // SomeFunctionality.java
 private void doSomething() {
-  if (!YourMod.CONFIG.featureEnabled.get()) return;
+  if (!YourModClient.CONFIG.featureEnabled.value()) return;
   
   // Rest of your code...
 }
 ```
 
+### Client/Server config synchronization
+
+To synchronize your config between the server and client, do the following steps
+
+In your config class, swap you `Config` for `SyncableConfig` (note that the `SyncableConfig` takes in an extra "id" argument)
+```java
+public class ModConfig extends SyncableConfig {
+  public final Option<Boolean> featureEnabled = new Option<>(provider, "featureEnabled", true, new BooleanSerializer());
+  public final Option<String> featureName = new Option<>(provider, "featureName", "SuperDuperName", new StringSerializer());
+  
+  public ModConfig(ConfigProvider provider, String id) {
+    super(provider, id);
+  }
+}
+```
+
+In your main mod initializer, add a `ConfigSync` property with the generic value set to the class of your configuration
+```java
+public class YourMod implements ModInitializer {
+  public static final ConfigSync<ModConfig> CONFIG_SYNC = new ConfigSync<>("put_any_unique_id_here");
+  
+  @Override
+  public void onInitialize() { }
+}
+```
+
+Your config should be synced with the server and client, and can be used for server-side logic. Keep in mind that players without the mod installed will not have any config to sync, so null values should be trated as such
+```java
+private void doSomethingOnTheServer() {
+  ModConfig config = YourMod.CONFIG_SYNC.configs.get(player.getUuid());
+  if (config == null || !config.easyElytraLaunchEnabled.value()) return;
+ 
+  // Rest of your code...
+}
+```
+
 ### Mod menu integration
-#### WIP
+
+To get integration with modmenu, createa a new class that implements the ModMenuIntegration interface and override the configProvider method.
+In the configProvider method, return the `ConfigProvider` class that modmenu should use for its configuration screen
+
+```java
+public class ModMenu implements ModMenuIntegration {
+  @Override
+  public ConfigProvider configProvider() {
+    return YourModClient.CONFIG_PROVIDER;
+  }
+}
+```
