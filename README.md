@@ -72,10 +72,15 @@ public class ModConfig extends SyncableConfig {
 }
 ```
 
-In your main mod initializer, add a `ConfigSync` property with the generic value set to the class of your configuration
+Update the CONFIG property of the client initializer class to pass in an id
+```java
+public static final ModConfig CONFIG = new ModConfig(CONFIG_PROVIDER, YourMod.MOD_ID);
+```
+
+In your main mod initializer, add a `ConfigSync` property with the generic value set to the class of your configuration. The id passed inn to the `ConfigSync` must be identical to the id passed in to the `SyncableConfig` class as shown above
 ```java
 public class YourMod implements ModInitializer {
-  public static final ConfigSync<ModConfig> CONFIG_SYNC = new ConfigSync<>("put_any_unique_id_here");
+  public static final ConfigSync<ModConfig> CONFIG_SYNC = new ConfigSync<>(YourMod.MOD_ID);
   
   @Override
   public void onInitialize() { }
