@@ -86,7 +86,7 @@ Your config should be synced with the server and client, and can be used for ser
 ```java
 private void doSomethingOnTheServer() {
   ModConfig config = YourMod.CONFIG_SYNC.configs.get(player.getUuid());
-  if (config == null || !config.easyElytraLaunchEnabled.value()) return;
+  if (config == null || !config.featureEnabled.value()) return;
  
   // Rest of your code...
 }
