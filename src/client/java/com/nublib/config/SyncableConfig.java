@@ -9,11 +9,11 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 
-public class ClientConfig extends Config {
-	private final ClientConfig me = this;
+public abstract class SyncableConfig extends Config {
+	private final SyncableConfig me = this;
 	private final String id;
 
-	public ClientConfig(ConfigProvider provider, String id) {
+	public SyncableConfig(ConfigProvider provider, String id) {
 		super(provider);
 		this.id = id;
 		this.provider.addChangeListener(new ChangeHandler());
