@@ -99,6 +99,23 @@ private void doSomethingOnTheServer() {
 
 ### Mod menu integration
 
+Firstly, make sure you have the modmenu mod in your gradle build script
+```gradle
+repositories {
+  // Rest of your repositories
+
+  maven {
+    url "https://maven.terraformersmc.com/releases"
+  }
+}
+
+dependencies {
+  // Rest of your dependencies
+
+  modApi "com.terraformersmc:modmenu:9.0.0"
+}
+```
+
 To get integration with modmenu, create a new class that implements the ModMenuIntegration interface and override the configProvider method.
 In the configProvider method, return the `ConfigProvider` class that modmenu should use for its configuration screen
 
@@ -108,5 +125,20 @@ public class ModMenu implements ModMenuIntegration {
   public ConfigProvider configProvider() {
     return YourModClient.CONFIG_PROVIDER;
   }
+}
+```
+
+Add the modmenu class to your your entrypoints in the fabric.mod.json file
+```json
+"entrypoints": {
+  "main": [
+    "com.yourmod.YourMod"
+  ],
+  "client": [
+    "com.yourmod.YourModClient"
+  ],
+  "modmenu": [
+    "com.yourmod.config.ModMenu"
+  ]
 }
 ```
