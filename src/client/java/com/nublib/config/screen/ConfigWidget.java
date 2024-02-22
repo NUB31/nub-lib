@@ -1,6 +1,6 @@
 package com.nublib.config.screen;
 
-import com.nublib.config.provider.IConfigProvider;
+import com.nublib.config.provider.ConfigProvider;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -25,7 +25,7 @@ public class ConfigWidget extends ElementListWidget.Entry<ConfigWidget> {
 	private final String description = "Not implemented yet";
 	private String originalValue;
 
-	public ConfigWidget(TextRenderer textRenderer, String key, String value, IConfigProvider configProvider) {
+	public ConfigWidget(TextRenderer textRenderer, String key, String value, ConfigProvider configProvider) {
 		this.originalValue = value;
 		this.key = key;
 
@@ -75,7 +75,7 @@ public class ConfigWidget extends ElementListWidget.Entry<ConfigWidget> {
 		title.setX(x);
 		title.setY(y);
 		title.setWidth(actualWidth);
-		
+
 		textField.setX(x);
 		textField.setY(y + actualHeight - 20);
 		textField.setWidth(actualWidth - 60 - 10);

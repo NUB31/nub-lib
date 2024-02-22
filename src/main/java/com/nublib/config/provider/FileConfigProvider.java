@@ -6,20 +6,16 @@ import net.fabricmc.loader.api.FabricLoader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.function.Consumer;
 
-public class FileConfigProvider implements IConfigProvider {
-	private final HashMap<String, String> config = new HashMap<>();
+public class FileConfigProvider extends ConfigProvider {
 	private final File file;
-	private final Consumer<ConfigKeyValue> onSet;
 
-	private FileConfigProvider(File file, Consumer<ConfigKeyValue> onSave) {
+	private FileConfigProvider(File file, IChangeHandler changeHandler) {
+		super(changeHandler);
 		this.file = file;
-		this.onSet = onSave;
 
 		try {
 			boolean isNewFile = file.createNewFile();
@@ -30,14 +26,13 @@ public class FileConfigProvider implements IConfigProvider {
 		}
 	}
 
-	public static FileConfigProvider create(String fileName, Consumer<ConfigKeyValue> onSet) {
+	public static FileConfigProvider create(String fileName, IChangeHandler changeHandler) {
 		File file = FabricLoader.getInstance().getConfigDir().resolve(String.format("%s.properties", fileName)).toFile();
-		return new FileConfigProvider(file, onSet);
+		return new FileConfigProvider(file, changeHandler);
 	}
 
 	public static FileConfigProvider create(String fileName) {
-		return create(fileName, (v) -> {
-		});
+		return create(fileName, new DefaultChangeHandler());
 	}
 
 	private void loadFile() throws IOException {
@@ -56,20 +51,14 @@ public class FileConfigProvider implements IConfigProvider {
 	}
 
 	@Override
-	public HashMap<String, String> all() {
-		return config;
-	}
-
-	@Override
-	public Optional<String> get(String key) {
+	public Optional<String> getImpl(String key) {
 		var value = config.get(key);
 		return Optional.ofNullable(value);
 	}
 
 	@Override
-	public void set(String key, String value) {
+	public void setImpl(String key, String value) {
 		config.put(key, value);
-		onSet.accept(new ConfigKeyValue(key, value));
 
 		try {
 			save();

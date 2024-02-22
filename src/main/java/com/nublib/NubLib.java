@@ -10,6 +10,5 @@ public class NubLib implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Initializing NUB Lib");
 	}
 }

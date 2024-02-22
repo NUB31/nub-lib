@@ -1,6 +1,6 @@
 package com.nublib.config.screen;
 
-import com.nublib.config.provider.IConfigProvider;
+import com.nublib.config.provider.ConfigProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -11,17 +11,17 @@ import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
 public class ConfigScreen extends GameOptionsScreen {
-	private final IConfigProvider configProvider;
-	private final int configListWidth = 320;
+	private final ConfigProvider configProvider;
 	private ConfigDetailsWidget configDetails;
 
-	public ConfigScreen(Screen parent, IConfigProvider configProvider) {
+	public ConfigScreen(Screen parent, ConfigProvider configProvider) {
 		super(parent, MinecraftClient.getInstance().options, Text.of("Mod configuration"));
 		this.configProvider = configProvider;
 	}
 
 	@Override
 	protected void init() {
+		int configListWidth = 320;
 		ConfigListWidget configList = new ConfigListWidget(configListWidth, height - 20, 10, this::setDetailsPane);
 		configList.setX(10);
 		ButtonWidget closeButton = ButtonWidget
