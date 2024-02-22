@@ -12,8 +12,9 @@ import java.util.UUID;
 public class ConfigSync<T extends Config> {
 	public HashMap<UUID, T> configs = new HashMap<>();
 
-	public ConfigSync() {
-		ServerPlayNetworking.registerGlobalReceiver(ServerModMessages.SYN_CONFIG, (server, player, handler, buf, responseSender) -> {
+	public ConfigSync(String id) {
+		ServerPlayNetworking.registerGlobalReceiver(ServerModMessages.createSynConfigIdentifier(id), (server, player, handler, buf, responseSender) -> {
+			NubLib.LOGGER.info(String.format("SYNC for \"%s\"", id));
 			configs.put(player.getUuid(), deserialize(buf.readByteArray()));
 		});
 	}

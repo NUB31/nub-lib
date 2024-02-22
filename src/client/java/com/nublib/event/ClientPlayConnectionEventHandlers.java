@@ -15,6 +15,5 @@ public class ClientPlayConnectionEventHandlers implements ClientPlayConnectionEv
 	@Override
 	public void onPlayReady(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client) {
 		NubLibClient.inGame = true;
-//		ClientPlayNetworking.send(ServerModMessages.SYN_CONFIG, PacketByteBufs.create().writeVarInt(configBytes.length).writeBytes(configBytes));
 	}
 }

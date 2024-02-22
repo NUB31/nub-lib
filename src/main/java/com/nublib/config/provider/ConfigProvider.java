@@ -1,10 +1,11 @@
 package com.nublib.config.provider;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Optional;
 
-public abstract class ConfigProvider {
+public abstract class ConfigProvider implements Serializable {
 	protected final LinkedList<IChangeHandler> changeHandlers = new LinkedList<>();
 	protected final HashMap<String, String> config = new HashMap<>();
 

@@ -13,8 +13,7 @@ import java.util.Scanner;
 public class FileConfigProvider extends ConfigProvider {
 	private final File file;
 
-	private FileConfigProvider(File file, IChangeHandler changeHandler) {
-		super(changeHandler);
+	private FileConfigProvider(File file) {
 		this.file = file;
 
 		try {
@@ -26,13 +25,9 @@ public class FileConfigProvider extends ConfigProvider {
 		}
 	}
 
-	public static FileConfigProvider create(String fileName, IChangeHandler changeHandler) {
-		File file = FabricLoader.getInstance().getConfigDir().resolve(String.format("%s.properties", fileName)).toFile();
-		return new FileConfigProvider(file, changeHandler);
-	}
-
 	public static FileConfigProvider create(String fileName) {
-		return create(fileName, new DefaultChangeHandler());
+		File file = FabricLoader.getInstance().getConfigDir().resolve(String.format("%s.properties", fileName)).toFile();
+		return new FileConfigProvider(file);
 	}
 
 	private void loadFile() throws IOException {

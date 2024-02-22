@@ -1,5 +1,7 @@
 package com.nublib.config.provider;
 
-public interface IChangeHandler {
+import java.io.Serializable;
+
+public interface IChangeHandler extends Serializable {
 	void onChange(String key, String value);
 }
