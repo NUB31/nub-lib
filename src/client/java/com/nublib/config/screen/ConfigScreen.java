@@ -1,5 +1,6 @@
 package com.nublib.config.screen;
 
+import com.nublib.NubLib;
 import com.nublib.config.Config;
 import com.nublib.config.option.ConfigOption;
 import com.nublib.config.screen.page.ConfigPage;
@@ -35,55 +36,62 @@ public class ConfigScreen extends GameOptionsScreen {
 	}
 
 	public static ConfigScreen fromConfig(Screen parent, Config config) {
-		ConfigScreen screen = new ConfigScreen(parent)
-				.addPage(Text.literal("Uncategorized"), page -> page
-						.addSection(Text.empty(), section -> {
-							List<Field> fields = Arrays.stream(config.getClass().getDeclaredFields()).filter(field -> field.getType().equals(ConfigOption.class)).toList();
-							for (Field field : fields) {
-								try {
-									ConfigOption<?> val = (ConfigOption<?>) field.get(config);
-									var metadata = config.getAnnotation(val);
-									Option option;
-									if (metadata != null) {
-										option = new Option(val.getControl(), Text.literal(metadata.title()), Text.literal(metadata.description()));
-									} else {
-										option = new Option(val.getControl(), Text.empty(), Text.empty());
-									}
+		ConfigScreen screen = new ConfigScreen(parent);
 
-									section.addOption(option);
-								} catch (Exception ignored) {
-								}
-							}
-						})
-				);
+		screen.addFromConfig(config, Text.literal("Uncategorized"));
 
-		List<Class<?>> classes = Arrays.stream(config.getClass().getDeclaredClasses()).toList();
-		for (Class<?> clazz : classes) {
-			List<Field> fields = Arrays.stream(clazz.getDeclaredFields()).filter(field -> field.getType().equals(ConfigOption.class)).toList();
-			if (fields.isEmpty()) continue;
-
-			screen.addPage(Text.literal(clazz.getSimpleName()), page -> {
-				page.addSection(Text.empty(), section -> {
-					for (Field field : fields) {
-						try {
-							ConfigOption<?> val = (ConfigOption<?>) field.get(config);
-							var metadata = config.getAnnotation(val);
-							Option option;
-							if (metadata != null) {
-								option = new Option(val.getControl(), Text.literal(metadata.title()), Text.literal(metadata.description()));
-							} else {
-								option = new Option(val.getControl(), Text.empty(), Text.empty());
-							}
-
-							section.addOption(option);
-						} catch (Exception ignored) {
-						}
+		List<Field> pages = Arrays
+				.stream(config.getClass().getDeclaredFields())
+				.filter(field -> {
+					try {
+						return field.get(config) instanceof Config;
+					} catch (Exception e) {
+						NubLib.LOGGER.warn(e.getMessage());
+						return false;
 					}
-				});
-			});
-		}
+				})
+				.toList();
+
+		pages.forEach(page -> {
+			try {
+				Config nestedConfig = (Config) page.get(config);
+				screen.addFromConfig(nestedConfig, Text.literal(nestedConfig.getClass().getSimpleName()));
+			} catch (Exception e) {
+				NubLib.LOGGER.warn(e.getMessage());
+			}
+		});
 
 		return screen;
+	}
+
+	private void addFromConfig(Config config, Text name) {
+		List<Field> fields = Arrays
+				.stream(config.getClass().getDeclaredFields())
+				.filter(field -> field.getType().isAssignableFrom(ConfigOption.class))
+				.toList();
+
+		if (!fields.isEmpty()) {
+			addPage(name, page -> page
+					.addSection(Text.empty(), section -> {
+						for (Field field : fields) {
+							try {
+								ConfigOption<?> val = (ConfigOption<?>) field.get(config);
+								var metadata = config.getAnnotation(val);
+								Option option;
+								if (metadata != null) {
+									option = new Option(val.getControl(), Text.literal(metadata.title()), Text.literal(metadata.description()));
+								} else {
+									option = new Option(val.getControl(), Text.empty(), Text.empty());
+								}
+
+								section.addOption(option);
+							} catch (Exception e) {
+								NubLib.LOGGER.info(e.getMessage());
+							}
+						}
+					})
+			);
+		}
 	}
 
 	public ConfigScreen setLeftSidebarWidth(int leftSidebarWidth) {
