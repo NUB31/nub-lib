@@ -2,7 +2,6 @@ package com.nublib.config.screen;
 
 import com.nublib.config.Config;
 import com.nublib.config.screen.page.ConfigPage;
-import com.nublib.config.screen.page.ConfigPageBuilder;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -22,10 +21,10 @@ public class ConfigScreenBuilder {
 		configScreen = new ConfigScreen(parent, Text.literal("Options"), configPages);
 	}
 
-	public ConfigScreenBuilder addPage(Text title, Consumer<ConfigPageBuilder> page) {
-		var configPageBuilder = new ConfigPageBuilder(textRenderer, title);
-		page.accept(configPageBuilder);
-		configPages.add(configPageBuilder.build());
+	public ConfigScreenBuilder addPage(Text title, Consumer<ConfigPage> page) {
+		var configPage = new ConfigPage(textRenderer, title);
+		page.accept(configPage);
+		configPages.add(configPage);
 		return this;
 	}
 
