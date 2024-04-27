@@ -1,4 +1,4 @@
-package com.nublib.config.provider;
+package com.nublib.config.provider.impl;
 
 public class ConfigKeyValue {
 	public String key;

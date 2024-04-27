@@ -1,6 +1,7 @@
-package com.nublib.config.provider;
+package com.nublib.config.provider.impl;
 
 import com.nublib.NubLib;
+import com.nublib.config.provider.StorageProvider;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
@@ -10,10 +11,10 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class FileConfigProvider extends ConfigProvider {
+public class FileStorageProvider extends StorageProvider {
 	private final File file;
 
-	private FileConfigProvider(File file) {
+	private FileStorageProvider(File file) {
 		this.file = file;
 
 		try {
@@ -25,14 +26,13 @@ public class FileConfigProvider extends ConfigProvider {
 		}
 	}
 
-	public static FileConfigProvider create(String fileName) {
+	public static FileStorageProvider create(String fileName) {
 		File file = FabricLoader.getInstance().getConfigDir().resolve(String.format("%s.properties", fileName)).toFile();
-		return new FileConfigProvider(file);
+		return new FileStorageProvider(file);
 	}
 
 	private void loadFile() throws IOException {
 		Scanner reader = new Scanner(file);
-
 		reader.forEachRemaining(line -> parseLine(line).ifPresent(kvp -> config.put(kvp.key, kvp.value)));
 	}
 
@@ -46,13 +46,13 @@ public class FileConfigProvider extends ConfigProvider {
 	}
 
 	@Override
-	public Optional<String> getImpl(String key) {
+	protected Optional<String> getImpl(String key) {
 		var value = config.get(key);
 		return Optional.ofNullable(value);
 	}
 
 	@Override
-	public void setImpl(String key, String value) {
+	protected void setImpl(String key, String value) {
 		config.put(key, value);
 
 		try {

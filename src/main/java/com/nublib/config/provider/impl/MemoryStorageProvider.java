@@ -1,8 +1,10 @@
-package com.nublib.config.provider;
+package com.nublib.config.provider.impl;
+
+import com.nublib.config.provider.StorageProvider;
 
 import java.util.Optional;
 
-public class MemoryConfigProvider extends ConfigProvider {
+public class MemoryStorageProvider extends StorageProvider {
 	@Override
 	public Optional<String> getImpl(String key) {
 		var value = config.get(key);

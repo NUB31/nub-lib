@@ -20,6 +20,9 @@
     ],
     "client": [
       "com.nublib.NubLibClient"
+    ],
+    "modmenu": [
+      "com.nublib.test.TestModMenuIntegration"
     ]
   },
   "mixins": [
