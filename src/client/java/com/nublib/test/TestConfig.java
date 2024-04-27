@@ -16,4 +16,8 @@ public class TestConfig extends Config {
 	public TestConfig(StorageProvider storageProvider) {
 		super(storageProvider);
 	}
+
+	class Category1 {
+		public final ConfigOption<Boolean> featureEnabled = new ConfigOption<>(storageProvider, "anotherFeatureEnabled", true, new BooleanSerializer(), new ToggleOption(true, Text.literal("Another feature enabled"), Text.literal("Determines if the other feature should be enabled")));
+	}
 }

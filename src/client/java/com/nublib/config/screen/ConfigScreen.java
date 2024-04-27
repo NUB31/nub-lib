@@ -9,11 +9,12 @@ import com.nublib.config.screen.page.section.option.IOption;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.MultilineTextWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.lang.reflect.Field;
@@ -25,7 +26,9 @@ import java.util.function.Consumer;
 
 public class ConfigScreen extends GameOptionsScreen {
 	private final List<ConfigPage> configPages;
-	private int leftSidebarWidth = 400;
+	@Nullable
+	private ConfigPage selectedConfigPage;
+	private int leftSidebarWidth = 512;
 
 	public ConfigScreen(Screen parent) {
 		super(parent, MinecraftClient.getInstance().options, Text.literal("Options"));
@@ -33,9 +36,9 @@ public class ConfigScreen extends GameOptionsScreen {
 	}
 
 	public static ConfigScreen fromConfig(Screen parent, Config config) {
-		return new ConfigScreen(parent)
-				.addPage(Text.literal("Options"), page -> page
-						.addSection(Text.literal("Section 1"), section -> {
+		ConfigScreen screen = new ConfigScreen(parent)
+				.addPage(Text.literal("Uncategorized"), page -> page
+						.addSection(Text.empty(), section -> {
 							List<Field> fields = Arrays.stream(config.getClass().getDeclaredFields()).filter(field -> field.getType().equals(ConfigOption.class)).toList();
 							for (Field field : fields) {
 								try {
@@ -46,6 +49,26 @@ public class ConfigScreen extends GameOptionsScreen {
 							}
 						})
 				);
+
+		List<Class<?>> classes = Arrays.stream(config.getClass().getDeclaredClasses()).toList();
+		for (Class<?> clazz : classes) {
+			List<Field> fields = Arrays.stream(clazz.getDeclaredFields()).filter(field -> field.getType().equals(ConfigOption.class)).toList();
+			if (fields.isEmpty()) continue;
+
+			screen.addPage(Text.literal(clazz.getSimpleName()), page -> {
+				page.addSection(Text.empty(), section -> {
+					for (Field field : fields) {
+						try {
+							ConfigOptionBase val = (ConfigOptionBase) field.get(config);
+							section.addOption(val.getOption());
+						} catch (IllegalAccessException ignored) {
+						}
+					}
+				});
+			});
+		}
+
+		return screen;
 	}
 
 	public ConfigScreen setLeftSidebarWidth(int leftSidebarWidth) {
@@ -57,41 +80,76 @@ public class ConfigScreen extends GameOptionsScreen {
 		var configPage = new ConfigPage(textRenderer, title);
 		page.accept(configPage);
 		configPages.add(configPage);
+
+		if (configPages.size() == 1) {
+			selectedConfigPage = configPage;
+		}
+
 		return this;
 	}
 
 	@Override
 	protected void init() {
 		final int paddingX = 10;
-		final int paddingY = 5;
+		final int paddingY = 10;
 
-		// Left sidebar
 		int width = Math.min(leftSidebarWidth, this.width - (2 * paddingX));
+
+		// Init position: top left
 		int x = paddingX;
 		int y = paddingY;
 
-		for (ConfigPage page : configPages) {
-			TextWidget pageLabel = new TextWidget(x, y, width, 20, page.getLabel(), textRenderer).alignLeft();
-			addDrawableChild(pageLabel);
-			y += pageLabel.getHeight() + paddingY;
+		// Tabs
+		int currentButtonGroupWidth = 0;
 
-			for (ConfigSection section : page.getConfigSections()) {
-				TextWidget sectionLabel = new TextWidget(x, y, width, 20, section.getLabel(), textRenderer);
-				addDrawableChild(sectionLabel);
-				y += sectionLabel.getHeight() + paddingY;
+		for (ConfigPage configPage : configPages) {
+			ButtonWidget buttonWidget = ButtonWidget
+					.builder(configPage.getLabel(), v -> {
+						selectedConfigPage = configPage;
+						clearAndInit();
+					})
+					.width(textRenderer.getWidth(configPage.getLabel()) + (paddingX * 2))
+					.position(x, y)
+					.build();
+
+			addDrawableChild(buttonWidget);
+
+			currentButtonGroupWidth += buttonWidget.getWidth();
+			if (currentButtonGroupWidth > width && configPage != configPages.get(0)) {
+				y += ButtonWidget.DEFAULT_HEIGHT + paddingY;
+				x = paddingX;
+				buttonWidget.setPosition(x, y);
+			}
+
+			x += buttonWidget.getWidth() + 5;
+		}
+
+		y += ButtonWidget.DEFAULT_HEIGHT + paddingY;
+		x = paddingX;
+
+		// Options list
+		if (selectedConfigPage != null) {
+			for (ConfigSection section : selectedConfigPage.getConfigSections()) {
+				if (!Objects.equals(section.getLabel().getLiteralString(), "")) {
+					TextWidget sectionLabel = new TextWidget(x, y, width, 20, section.getLabel(), textRenderer);
+					addDrawableChild(sectionLabel);
+					y += sectionLabel.getHeight() + paddingY;
+				}
 
 				for (IOption option : section.getOptions()) {
 					if (!Objects.equals(option.getLabel().getLiteralString(), "")) {
 						TextWidget titleLabel = new TextWidget(x, y, width, 20, option.getLabel(), textRenderer).alignLeft();
 						addDrawableChild(titleLabel);
-						y += titleLabel.getHeight() + paddingY;
+						y += titleLabel.getHeight() + (paddingY / 2);
 					}
 
 					if (!Objects.equals(option.getDescription().getLiteralString(), "")) {
-						MultilineTextWidget descriptionLabel = new MultilineTextWidget(x, y, option.getDescription(), textRenderer).setTextColor(Color.decode("#bababa").getRGB());
+						MultilineTextWidget descriptionLabel = new MultilineTextWidget(x, y, option.getDescription(), textRenderer)
+								.setTextColor(Color.decode("#bababa").getRGB())
+								.setMaxWidth(width);
 
 						addDrawableChild(descriptionLabel);
-						y += descriptionLabel.getHeight() + paddingY;
+						y += descriptionLabel.getHeight() + (paddingY / 2);
 					}
 
 					ClickableWidget widget = option.getWidget(textRenderer, 10, y, width, 20);
@@ -109,9 +167,7 @@ public class ConfigScreen extends GameOptionsScreen {
 			// Remaining screen space minus padding;
 			width = this.width - (3 * paddingX) - width;
 
-			// No point in rendering if the side pane is too small
-			TextFieldWidget detailsPane = new TextFieldWidget(textRenderer, x, y, width, height - (2 * paddingY), Text.literal("lkdfjgl"));
-			addDrawableChild(detailsPane);
+			// TODO: Add customizable sidebar
 		}
 	}
 }

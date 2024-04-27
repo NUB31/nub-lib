@@ -46,12 +46,4 @@ public abstract class Option<T> implements IOption {
 	public Text getDescription() {
 		return description;
 	}
-
-	public T getValue() {
-		return value;
-	}
-
-	public void setValue(T value) {
-		this.value = value;
-	}
 }
