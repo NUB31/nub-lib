@@ -29,7 +29,7 @@ public class ToggleOption extends Option<Boolean> {
 	}
 
 	@Override
-	public ClickableWidget getWidget(TextRenderer textRenderer, int x, int y, int width, int height) {
+	public ClickableWidget createWidget(TextRenderer textRenderer, int x, int y, int width, int height) {
 		return CheckboxWidget
 				.builder(checkBoxLabel, textRenderer)
 				.pos(x, y)

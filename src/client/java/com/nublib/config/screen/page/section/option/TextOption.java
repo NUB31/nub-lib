@@ -15,7 +15,7 @@ public class TextOption extends Option<String> {
 	}
 
 	@Override
-	public ClickableWidget getWidget(TextRenderer textRenderer, int x, int y, int width, int height) {
+	public ClickableWidget createWidget(TextRenderer textRenderer, int x, int y, int width, int height) {
 		TextFieldWidget widget = new TextFieldWidget(textRenderer, x, y, width, height, Text.literal(value));
 		widget.setText(value);
 		return widget;
