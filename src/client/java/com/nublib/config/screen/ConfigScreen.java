@@ -135,6 +135,10 @@ public class ConfigScreen extends GameOptionsScreen {
 					.position(x, y)
 					.build();
 
+			if (configPage == selectedConfigPage) {
+				buttonWidget.active = false;
+			}
+
 			addDrawableChild(buttonWidget);
 
 			currentButtonGroupWidth += buttonWidget.getWidth();
