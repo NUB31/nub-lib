@@ -3,6 +3,8 @@ package com.nublib.config.screen;
 import com.nublib.NubLib;
 import com.nublib.config.Config;
 import com.nublib.config.option.ConfigOption;
+import com.nublib.config.screen.elements.ConfigEntry;
+import com.nublib.config.screen.elements.ConfigList;
 import com.nublib.config.screen.page.ConfigPage;
 import com.nublib.config.screen.page.section.ConfigSection;
 import com.nublib.config.screen.page.section.Option;
@@ -10,13 +12,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.MultilineTextWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,11 +115,30 @@ public class ConfigScreen extends GameOptionsScreen {
 		final int paddingX = 10;
 		final int paddingY = 10;
 
-		int width = Math.min(leftSidebarWidth, this.width - (2 * paddingX));
+		Text saveButtonText = Text.literal("Save");
+		int saveButtonWidth = textRenderer.getWidth(saveButtonText) + (paddingX * 2);
 
-		// Init position: top left
+		ButtonWidget saveButton = ButtonWidget.builder(saveButtonText, v -> close())
+				.width(saveButtonWidth)
+				.position(width - paddingX - saveButtonWidth, height - ButtonWidget.DEFAULT_HEIGHT - paddingY)
+				.build();
+
+		addDrawableChild(saveButton);
+
+		Text closeButtonText = Text.literal("Close");
+		int closeButtonWidth = textRenderer.getWidth(closeButtonText) + (paddingX * 2);
+
+		ButtonWidget closeButton = ButtonWidget.builder(closeButtonText, v -> close())
+				.width(closeButtonWidth)
+				.position(width - (2 * paddingX) - closeButtonWidth - saveButton.getWidth(), height - ButtonWidget.DEFAULT_HEIGHT - paddingY)
+				.build();
+
+		addDrawableChild(closeButton);
+
 		int x = paddingX;
 		int y = paddingY;
+		int width = Math.min(leftSidebarWidth, this.width - (2 * paddingX));
+		int height = this.height - (3 * paddingY) - Math.max(closeButton.getHeight(), saveButton.getHeight());
 
 		// Tabs
 		int currentButtonGroupWidth = 0;
@@ -153,8 +171,10 @@ public class ConfigScreen extends GameOptionsScreen {
 
 		y += ButtonWidget.DEFAULT_HEIGHT + paddingY;
 		x = paddingX;
+		height -= (paddingY + ButtonWidget.DEFAULT_HEIGHT);
 
-		// Options list
+		// Config list
+
 		if (selectedConfigPage != null) {
 			for (ConfigSection section : selectedConfigPage.getConfigSections()) {
 				if (!Objects.equals(section.getLabel().getLiteralString(), "")) {
@@ -163,26 +183,13 @@ public class ConfigScreen extends GameOptionsScreen {
 					y += sectionLabel.getHeight() + paddingY;
 				}
 
+				var configList = new ConfigList(width, height, x, y, 100);
+
 				for (Option option : section.getOptions()) {
-					if (!Objects.equals(option.getLabel().getLiteralString(), "")) {
-						TextWidget titleLabel = new TextWidget(x, y, width, 20, option.getLabel(), textRenderer).alignLeft();
-						addDrawableChild(titleLabel);
-						y += titleLabel.getHeight() + (paddingY / 2);
-					}
-
-					if (!Objects.equals(option.getDescription().getLiteralString(), "")) {
-						MultilineTextWidget descriptionLabel = new MultilineTextWidget(x, y, option.getDescription(), textRenderer)
-								.setTextColor(Color.decode("#bababa").getRGB())
-								.setMaxWidth(width);
-
-						addDrawableChild(descriptionLabel);
-						y += descriptionLabel.getHeight() + (paddingY / 2);
-					}
-
-					ClickableWidget widget = option.getControl().getWidget(textRenderer, 10, y, width, 20);
-					addDrawableChild(widget);
-					y += widget.getHeight() + paddingY;
+					configList.children().add(new ConfigEntry(option, textRenderer));
 				}
+
+				addDrawableChild(configList);
 			}
 		}
 
@@ -192,7 +199,7 @@ public class ConfigScreen extends GameOptionsScreen {
 			y = paddingY;
 
 			// Remaining screen space minus padding;
-			width = this.width - (3 * paddingX) - width;
+			width = -(3 * paddingX);
 
 			// TODO: Add customizable sidebar
 		}
