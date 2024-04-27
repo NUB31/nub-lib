@@ -42,8 +42,16 @@ public class ConfigScreen extends GameOptionsScreen {
 							for (Field field : fields) {
 								try {
 									ConfigOption<?> val = (ConfigOption<?>) field.get(config);
-									section.addOption(val.getOption());
-								} catch (IllegalAccessException ignored) {
+									var metadata = config.getAnnotation(val);
+									Option option;
+									if (metadata != null) {
+										option = new Option(val.getControl(), Text.literal(metadata.title()), Text.literal(metadata.description()));
+									} else {
+										option = new Option(val.getControl(), Text.empty(), Text.empty());
+									}
+
+									section.addOption(option);
+								} catch (Exception ignored) {
 								}
 							}
 						})
@@ -59,8 +67,16 @@ public class ConfigScreen extends GameOptionsScreen {
 					for (Field field : fields) {
 						try {
 							ConfigOption<?> val = (ConfigOption<?>) field.get(config);
-							section.addOption(val.getOption());
-						} catch (IllegalAccessException ignored) {
+							var metadata = config.getAnnotation(val);
+							Option option;
+							if (metadata != null) {
+								option = new Option(val.getControl(), Text.literal(metadata.title()), Text.literal(metadata.description()));
+							} else {
+								option = new Option(val.getControl(), Text.empty(), Text.empty());
+							}
+
+							section.addOption(option);
+						} catch (Exception ignored) {
 						}
 					}
 				});

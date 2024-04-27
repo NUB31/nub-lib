@@ -1,9 +1,6 @@
 package com.nublib.config.option;
 
-import com.nublib.NubLib;
-import com.nublib.config.annotation.ConfigMetadata;
 import com.nublib.config.provider.StorageProvider;
-import com.nublib.config.screen.page.section.Option;
 import com.nublib.config.screen.page.section.control.IControl;
 import com.nublib.config.screen.page.section.control.TextFieldControl;
 import com.nublib.config.screen.page.section.control.ToggleControl;
@@ -15,8 +12,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
-
-import java.util.Arrays;
 
 public class ConfigOption<T> {
 	private final StorageProvider storageProvider;
@@ -75,16 +70,15 @@ public class ConfigOption<T> {
 				.orElse(defaultValue);
 	}
 
-	public Option getOption() {
-		Arrays.stream(this.getClass().getAnnotations()).toList().forEach(x -> NubLib.LOGGER.info(x.toString()));
-
-		ConfigMetadata annotation = this.getClass().getAnnotation(ConfigMetadata.class);
-		Text description = annotation != null ? Text.literal(annotation.description()) : Text.empty();
-		Text title = annotation != null ? Text.literal(annotation.title()) : Text.empty();
-		return new Option(control, title, description);
-	}
-
 	public void set(T value) {
 		storageProvider.set(key, serializer.serialize(value));
+	}
+
+	public IControl getControl() {
+		return control;
+	}
+
+	public String getKey() {
+		return key;
 	}
 }
