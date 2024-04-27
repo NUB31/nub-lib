@@ -10,10 +10,10 @@ import java.util.function.Consumer;
 
 public class ConfigPage {
 	private final List<ConfigSection> configSections;
-	private final Text message;
+	private final Text label;
 
-	public ConfigPage(TextRenderer textRenderer, Text message) {
-		this.message = message;
+	public ConfigPage(TextRenderer textRenderer, Text label) {
+		this.label = label;
 		configSections = new ArrayList<>();
 	}
 
@@ -24,8 +24,8 @@ public class ConfigPage {
 		return this;
 	}
 
-	public Text getMessage() {
-		return message;
+	public Text getLabel() {
+		return label;
 	}
 
 	public List<ConfigSection> getConfigSections() {

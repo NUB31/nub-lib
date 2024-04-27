@@ -2,22 +2,19 @@ package com.nublib.config.screen.page.section.option;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 
-public class TextOption extends Option<String> {
-	public TextOption(String defaultValue, Text label, Text description) {
+public class RangeOption extends Option<Integer> {
+	protected RangeOption(Integer defaultValue, Text label, Text description) {
 		super(defaultValue, label, description);
 	}
 
-	public TextOption(String defaultValue, Text label) {
+	protected RangeOption(Integer defaultValue, Text label) {
 		super(defaultValue, label);
 	}
 
 	@Override
 	public ClickableWidget getWidget(TextRenderer textRenderer, int x, int y, int width, int height) {
-		TextFieldWidget widget = new TextFieldWidget(textRenderer, x, y, width, height, Text.literal(value));
-		widget.setText(value);
-		return widget;
+		return null;
 	}
 }

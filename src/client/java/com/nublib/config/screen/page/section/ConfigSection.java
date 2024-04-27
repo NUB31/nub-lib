@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigSection {
-	private final Text message;
+	private final Text label;
 	private final List<IOption> options;
 
-	public ConfigSection(Text message) {
-		this.message = message;
+	public ConfigSection(Text label) {
+		this.label = label;
 		options = new ArrayList<>();
 	}
 
@@ -20,8 +20,8 @@ public class ConfigSection {
 		return this;
 	}
 
-	public Text getMessage() {
-		return message;
+	public Text getLabel() {
+		return label;
 	}
 
 	public List<IOption> getOptions() {

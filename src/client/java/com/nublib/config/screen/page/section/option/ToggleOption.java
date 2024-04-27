@@ -6,24 +6,32 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 
 public class ToggleOption extends Option<Boolean> {
-	public ToggleOption(TextRenderer textRenderer, Boolean defaultValue, Text label, Text description) {
-		super(textRenderer, defaultValue, label, description);
+	private final Text checkBoxLabel;
+
+	public ToggleOption(Text checkBoxLabel, Boolean defaultValue, Text label, Text description) {
+		super(defaultValue, label, description);
+		this.checkBoxLabel = checkBoxLabel;
+	}
+
+	public ToggleOption(Text checkBoxLabel, Boolean defaultValue, Text label) {
+		super(defaultValue, label);
+		this.checkBoxLabel = checkBoxLabel;
+	}
+
+	public ToggleOption(Boolean defaultValue, Text label, Text description) {
+		super(defaultValue, label, description);
+		this.checkBoxLabel = Text.literal("Enabled");
+	}
+
+	public ToggleOption(Boolean defaultValue, Text label) {
+		super(defaultValue, label);
+		this.checkBoxLabel = Text.literal("Enabled");
 	}
 
 	@Override
-	public Boolean getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(Boolean value) {
-		this.value = value;
-	}
-
-	@Override
-	public ClickableWidget getWidget(int x, int y, int width, int height) {
+	public ClickableWidget getWidget(TextRenderer textRenderer, int x, int y, int width, int height) {
 		return CheckboxWidget
-				.builder(Text.literal("dfklgdkfjlg"), textRenderer)
+				.builder(checkBoxLabel, textRenderer)
 				.pos(x, y)
 				.checked(value)
 				.build();
