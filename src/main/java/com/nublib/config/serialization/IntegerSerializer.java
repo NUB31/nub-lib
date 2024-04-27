@@ -2,7 +2,7 @@ package com.nublib.config.serialization;
 
 import java.util.Optional;
 
-public class IntSerializer implements ISerializer<Integer> {
+public class IntegerSerializer implements ISerializer<Integer> {
 	@Override
 	public Optional<Integer> parse(String value) {
 		try {

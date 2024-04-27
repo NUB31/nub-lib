@@ -1,11 +1,11 @@
 package com.nublib.config.annotation;
 
-import org.jetbrains.annotations.Nullable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
+@Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigMetadata {
-	@Nullable
 	String title();
 
-	@Nullable
 	String description();
 }

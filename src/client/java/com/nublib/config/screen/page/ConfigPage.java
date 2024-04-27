@@ -1,7 +1,6 @@
 package com.nublib.config.screen.page;
 
 import com.nublib.config.screen.page.section.ConfigSection;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ public class ConfigPage {
 	private final List<ConfigSection> configSections;
 	private final Text label;
 
-	public ConfigPage(TextRenderer textRenderer, Text label) {
+	public ConfigPage(Text label) {
 		this.label = label;
 		configSections = new ArrayList<>();
 	}

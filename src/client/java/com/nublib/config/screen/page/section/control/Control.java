@@ -1,25 +1,14 @@
-package com.nublib.config.screen.page.section.option;
+package com.nublib.config.screen.page.section.control;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
 
-public abstract class Option<T> implements IOption {
+public abstract class Control<T> implements IControl {
 	protected T value;
-	protected Text label;
-	protected Text description;
 	protected ClickableWidget widget;
 
-	protected Option(T defaultValue, Text label, Text description) {
+	protected Control(T defaultValue) {
 		this.value = defaultValue;
-		this.label = label;
-		this.description = description;
-	}
-
-	protected Option(T defaultValue, Text label) {
-		this.value = defaultValue;
-		this.label = label;
-		this.description = Text.empty();
 	}
 
 	protected abstract ClickableWidget createWidget(TextRenderer textRenderer, int x, int y, int width, int height);
@@ -35,15 +24,5 @@ public abstract class Option<T> implements IOption {
 		widget.setWidth(width);
 		widget.setHeight(height);
 		return widget;
-	}
-
-	@Override
-	public Text getLabel() {
-		return label;
-	}
-
-	@Override
-	public Text getDescription() {
-		return description;
 	}
 }

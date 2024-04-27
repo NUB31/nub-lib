@@ -2,10 +2,9 @@ package com.nublib.config.screen;
 
 import com.nublib.config.Config;
 import com.nublib.config.option.ConfigOption;
-import com.nublib.config.option.ConfigOptionBase;
 import com.nublib.config.screen.page.ConfigPage;
 import com.nublib.config.screen.page.section.ConfigSection;
-import com.nublib.config.screen.page.section.option.IOption;
+import com.nublib.config.screen.page.section.Option;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -42,7 +41,7 @@ public class ConfigScreen extends GameOptionsScreen {
 							List<Field> fields = Arrays.stream(config.getClass().getDeclaredFields()).filter(field -> field.getType().equals(ConfigOption.class)).toList();
 							for (Field field : fields) {
 								try {
-									ConfigOptionBase val = (ConfigOptionBase) field.get(config);
+									ConfigOption<?> val = (ConfigOption<?>) field.get(config);
 									section.addOption(val.getOption());
 								} catch (IllegalAccessException ignored) {
 								}
@@ -59,7 +58,7 @@ public class ConfigScreen extends GameOptionsScreen {
 				page.addSection(Text.empty(), section -> {
 					for (Field field : fields) {
 						try {
-							ConfigOptionBase val = (ConfigOptionBase) field.get(config);
+							ConfigOption<?> val = (ConfigOption<?>) field.get(config);
 							section.addOption(val.getOption());
 						} catch (IllegalAccessException ignored) {
 						}
@@ -77,7 +76,7 @@ public class ConfigScreen extends GameOptionsScreen {
 	}
 
 	public ConfigScreen addPage(Text title, Consumer<ConfigPage> page) {
-		var configPage = new ConfigPage(textRenderer, title);
+		var configPage = new ConfigPage(title);
 		page.accept(configPage);
 		configPages.add(configPage);
 
@@ -136,7 +135,7 @@ public class ConfigScreen extends GameOptionsScreen {
 					y += sectionLabel.getHeight() + paddingY;
 				}
 
-				for (IOption option : section.getOptions()) {
+				for (Option option : section.getOptions()) {
 					if (!Objects.equals(option.getLabel().getLiteralString(), "")) {
 						TextWidget titleLabel = new TextWidget(x, y, width, 20, option.getLabel(), textRenderer).alignLeft();
 						addDrawableChild(titleLabel);
@@ -152,7 +151,7 @@ public class ConfigScreen extends GameOptionsScreen {
 						y += descriptionLabel.getHeight() + (paddingY / 2);
 					}
 
-					ClickableWidget widget = option.getWidget(textRenderer, 10, y, width, 20);
+					ClickableWidget widget = option.getControl().getWidget(textRenderer, 10, y, width, 20);
 					addDrawableChild(widget);
 					y += widget.getHeight() + paddingY;
 				}

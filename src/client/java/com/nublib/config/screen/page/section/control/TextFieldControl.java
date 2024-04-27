@@ -1,17 +1,13 @@
-package com.nublib.config.screen.page.section.option;
+package com.nublib.config.screen.page.section.control;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 
-public class TextOption extends Option<String> {
-	public TextOption(String defaultValue, Text label, Text description) {
-		super(defaultValue, label, description);
-	}
-
-	public TextOption(String defaultValue, Text label) {
-		super(defaultValue, label);
+public class TextFieldControl extends Control<String> {
+	public TextFieldControl(String defaultValue) {
+		super(defaultValue);
 	}
 
 	@Override

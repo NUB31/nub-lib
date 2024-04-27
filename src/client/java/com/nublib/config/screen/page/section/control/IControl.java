@@ -1,13 +1,8 @@
-package com.nublib.config.screen.page.section.option;
+package com.nublib.config.screen.page.section.control;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
 
-public interface IOption {
+public interface IControl {
 	ClickableWidget getWidget(TextRenderer textRenderer, int x, int y, int width, int height);
-
-	Text getLabel();
-
-	Text getDescription();
 }
