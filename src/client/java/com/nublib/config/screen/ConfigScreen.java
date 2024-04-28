@@ -7,13 +7,12 @@ import com.nublib.config.provider.IStorageProvider;
 import com.nublib.config.screen.elements.ConfigEntry;
 import com.nublib.config.screen.elements.ConfigList;
 import com.nublib.config.screen.model.ConfigPage;
-import com.nublib.config.screen.model.section.ConfigOption;
 import com.nublib.config.screen.model.section.ConfigSection;
+import com.nublib.config.screen.model.section.Option;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -65,19 +64,6 @@ public class ConfigScreen extends GameOptionsScreen {
 		return screen;
 	}
 
-	public ConfigScreen reset() {
-		configPages
-				.forEach(configPage -> configPage
-						.getConfigSections()
-						.forEach(configSection -> configSection
-								.getOptions()
-								.forEach(configOption -> configOption
-										.getControl()
-										.reset())));
-
-		return this;
-	}
-
 	private void generatePageFromConfig(Config config, Text name) {
 		Field[] fields = config.getClass().getDeclaredFields();
 
@@ -88,11 +74,11 @@ public class ConfigScreen extends GameOptionsScreen {
 							try {
 								IHasControl<?> hasControl = (IHasControl<?>) field.get(config);
 								var metadata = config.getMetadataForField(hasControl);
-								ConfigOption<?> option;
+								Option<?> option;
 								if (metadata != null) {
-									option = new ConfigOption<>(hasControl.getControl(), Text.literal(metadata.title()), Text.literal(metadata.description()));
+									option = new Option<>(hasControl.getControl(), Text.literal(metadata.title()), Text.literal(metadata.description()));
 								} else {
-									option = new ConfigOption<>(hasControl.getControl(), Text.empty(), Text.empty());
+									option = new Option<>(hasControl.getControl(), Text.empty(), Text.empty());
 								}
 
 								section.addOption(option);
@@ -123,6 +109,18 @@ public class ConfigScreen extends GameOptionsScreen {
 		return this;
 	}
 
+	public ConfigScreen reset() {
+		configPages
+				.forEach(configPage -> configPage
+						.getConfigSections()
+						.forEach(configSection -> configSection
+								.getOptions()
+								.forEach(option -> option
+										.getControl()
+										.reset())));
+		return this;
+	}
+
 	@Override
 	protected void init() {
 		final int paddingX = 10;
@@ -140,13 +138,13 @@ public class ConfigScreen extends GameOptionsScreen {
 									.getConfigSections()
 									.forEach(section -> section.
 											getOptions()
-											.forEach(configOption -> {
-												configOption.getControl().apply();
-												if (!storageProviders.contains(configOption.getControl().getStorageProvider())) {
-													storageProviders.add(configOption.getControl().getStorageProvider());
+											.forEach(option -> {
+												option.getControl().apply();
+												if (!storageProviders.contains(option.getControl().getStorageProvider())) {
+													storageProviders.add(option.getControl().getStorageProvider());
 												}
 											})));
-					
+
 					storageProviders.forEach(IStorageProvider::save);
 					close();
 				})
@@ -216,11 +214,12 @@ public class ConfigScreen extends GameOptionsScreen {
 					TextWidget sectionLabel = new TextWidget(x, y, width, 20, section.getLabel(), textRenderer);
 					addDrawableChild(sectionLabel);
 					y += sectionLabel.getHeight() + paddingY;
+					height -= sectionLabel.getHeight() + paddingY;
 				}
 
 				var configList = new ConfigList(width, height, x, y, 90);
 
-				for (ConfigOption<?> configOption : section.getOptions()) {
+				for (Option<?> configOption : section.getOptions()) {
 					configList.children().add(new ConfigEntry(configOption, textRenderer));
 				}
 
@@ -235,8 +234,8 @@ public class ConfigScreen extends GameOptionsScreen {
 		y = paddingY;
 
 		if (width > 0) {
-			TextFieldWidget widget = new TextFieldWidget(textRenderer, x, y, width, height, Text.empty());
-			addDrawableChild(widget);
+//			TextFieldWidget widget = new TextFieldWidget(textRenderer, x, y, width, height, Text.empty());
+//			addDrawableChild(widget);
 		}
 	}
 }

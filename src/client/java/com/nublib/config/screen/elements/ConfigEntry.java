@@ -1,6 +1,6 @@
 package com.nublib.config.screen.elements;
 
-import com.nublib.config.screen.model.section.ConfigOption;
+import com.nublib.config.screen.model.section.Option;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -9,7 +9,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.MultilineTextWidget;
 import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.util.math.ColorHelper;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -18,10 +17,10 @@ import java.util.Objects;
 
 public class ConfigEntry extends ElementListWidget.Entry<ConfigEntry> {
 	private final List<ClickableWidget> children = new ArrayList<>();
-	private final ConfigOption<?> configOption;
+	private final Option<?> configOption;
 	private final TextRenderer textRenderer;
 
-	public ConfigEntry(ConfigOption<?> configOption, TextRenderer textRenderer) {
+	public ConfigEntry(Option<?> configOption, TextRenderer textRenderer) {
 		this.configOption = configOption;
 		this.textRenderer = textRenderer;
 	}
@@ -39,8 +38,6 @@ public class ConfigEntry extends ElementListWidget.Entry<ConfigEntry> {
 	@Override
 	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 		children.clear();
-		int color = Color.decode("#444444").getRGB();
-		context.fill(x, y, x + entryWidth, y + entryHeight, ColorHelper.Abgr.withAlpha(128, color));
 
 		int dynamicY = y + 10;
 		int dynamicX = x + 10;
