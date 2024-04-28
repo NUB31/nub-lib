@@ -9,6 +9,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.MultilineTextWidget;
 import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.util.math.ColorHelper;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -23,7 +24,6 @@ public class ConfigEntry extends ElementListWidget.Entry<ConfigEntry> {
 	public ConfigEntry(ConfigOption<?> configOption, TextRenderer textRenderer) {
 		this.configOption = configOption;
 		this.textRenderer = textRenderer;
-		children.add(configOption.getControl().getOrCreateWidget(textRenderer, 0, 0, 0, 0));
 	}
 
 	@Override
@@ -38,21 +38,28 @@ public class ConfigEntry extends ElementListWidget.Entry<ConfigEntry> {
 
 	@Override
 	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		int color = Color.decode("#33339A").getRGB();
-		context.fill(x, y, x + entryWidth, y + entryHeight, color);
+		children.clear();
+		int color = Color.decode("#444444").getRGB();
+		context.fill(x, y, x + entryWidth, y + entryHeight, ColorHelper.Abgr.withAlpha(128, color));
 
 		int dynamicY = y + 10;
 		int dynamicX = x + 10;
 		int dynamicWidth = entryWidth - 20 - 8; // -8 to compensate for scrollbar width
 		int dynamicHeight = entryHeight - 20;
 
-		configOption.getControl().getOrCreateWidget(textRenderer, dynamicX, dynamicY + dynamicHeight - 20, dynamicWidth, 20).render(context, mouseX, mouseY, tickDelta);
+		ClickableWidget configWidget = configOption
+				.getControl()
+				.getOrCreateWidget(textRenderer, dynamicX, dynamicY + dynamicHeight - 20, dynamicWidth, 20);
+
+		configWidget.render(context, mouseX, mouseY, tickDelta);
+		children.add(configWidget);
 
 		dynamicHeight -= 25;
 
 		if (!Objects.equals(configOption.getLabel().getLiteralString(), "")) {
 			TextWidget title = new TextWidget(dynamicX, dynamicY, dynamicWidth, textRenderer.fontHeight, configOption.getLabel(), textRenderer).alignLeft();
 			title.render(context, mouseX, mouseY, tickDelta);
+			children.add(title);
 
 			dynamicY += title.getHeight() + 5;
 		}
@@ -62,8 +69,8 @@ public class ConfigEntry extends ElementListWidget.Entry<ConfigEntry> {
 					.setTextColor(Color.decode("#bababa").getRGB())
 					.setMaxWidth(dynamicWidth)
 					.setMaxRows(dynamicHeight / textRenderer.fontHeight - 1);
-
 			description.render(context, mouseX, mouseY, tickDelta);
+			children.add(description);
 			dynamicY += description.getHeight() + 5;
 		}
 	}
