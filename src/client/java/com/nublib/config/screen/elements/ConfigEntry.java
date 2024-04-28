@@ -1,6 +1,6 @@
 package com.nublib.config.screen.elements;
 
-import com.nublib.config.screen.page.section.Option;
+import com.nublib.config.screen.page.section.ConfigOption;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -17,13 +17,13 @@ import java.util.Objects;
 
 public class ConfigEntry extends ElementListWidget.Entry<ConfigEntry> {
 	private final List<ClickableWidget> children = new ArrayList<>();
-	private final Option option;
+	private final ConfigOption<?> configOption;
 	private final TextRenderer textRenderer;
 
-	public ConfigEntry(Option option, TextRenderer textRenderer) {
-		this.option = option;
+	public ConfigEntry(ConfigOption<?> configOption, TextRenderer textRenderer) {
+		this.configOption = configOption;
 		this.textRenderer = textRenderer;
-		children.add(option.getControl().getWidget(textRenderer, 0, 0, 0, 0));
+		children.add(configOption.getControl().getOrCreateWidget(textRenderer, 0, 0, 0, 0));
 	}
 
 	@Override
@@ -46,19 +46,19 @@ public class ConfigEntry extends ElementListWidget.Entry<ConfigEntry> {
 		int dynamicWidth = entryWidth - 20 - 8; // -8 to compensate for scrollbar width
 		int dynamicHeight = entryHeight - 20;
 
-		option.getControl().getWidget(textRenderer, dynamicX, dynamicY + dynamicHeight - 20, dynamicWidth, 20).render(context, mouseX, mouseY, tickDelta);
+		configOption.getControl().getOrCreateWidget(textRenderer, dynamicX, dynamicY + dynamicHeight - 20, dynamicWidth, 20).render(context, mouseX, mouseY, tickDelta);
 
 		dynamicHeight -= 25;
 
-		if (!Objects.equals(option.getLabel().getLiteralString(), "")) {
-			TextWidget title = new TextWidget(dynamicX, dynamicY, dynamicWidth, textRenderer.fontHeight, option.getLabel(), textRenderer).alignLeft();
+		if (!Objects.equals(configOption.getLabel().getLiteralString(), "")) {
+			TextWidget title = new TextWidget(dynamicX, dynamicY, dynamicWidth, textRenderer.fontHeight, configOption.getLabel(), textRenderer).alignLeft();
 			title.render(context, mouseX, mouseY, tickDelta);
 
 			dynamicY += title.getHeight() + 5;
 		}
 
-		if (!Objects.equals(option.getDescription().getLiteralString(), "")) {
-			MultilineTextWidget description = new MultilineTextWidget(dynamicX, dynamicY, option.getDescription(), textRenderer)
+		if (!Objects.equals(configOption.getDescription().getLiteralString(), "")) {
+			MultilineTextWidget description = new MultilineTextWidget(dynamicX, dynamicY, configOption.getDescription(), textRenderer)
 					.setTextColor(Color.decode("#bababa").getRGB())
 					.setMaxWidth(dynamicWidth)
 					.setMaxRows(dynamicHeight / textRenderer.fontHeight - 1);

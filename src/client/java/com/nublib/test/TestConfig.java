@@ -2,19 +2,17 @@ package com.nublib.test;
 
 import com.nublib.config.Config;
 import com.nublib.config.annotation.ConfigOptionMetadata;
-import com.nublib.config.option.ConfigOption;
-import com.nublib.config.provider.StorageProvider;
+import com.nublib.config.option.BooleanConfigOption;
+import com.nublib.config.option.StringConfigOption;
+import com.nublib.config.provider.IStorageProvider;
 
 public class TestConfig extends Config {
 	@ConfigOptionMetadata(title = "Is stupid", description = "Determines if i am stupid or not")
-	public final ConfigOption<Boolean> isStupid = ConfigOption.Boolean(storageProvider, "isStupid", true);
+	public final BooleanConfigOption isStupid = new BooleanConfigOption("isStupid", true, storageProvider);
+	@ConfigOptionMetadata(title = "Text field", description = "Determines text field of something")
+	public final StringConfigOption textField = new StringConfigOption("textField", "test", storageProvider);
 
-	public TestFeatureConfig config = new TestFeatureConfig(storageProvider);
-	public TestFeatureConfig config2 = new TestFeatureConfig(storageProvider);
-	public TestFeatureConfig config3 = new TestFeatureConfig(storageProvider);
-	public TestFeatureConfig config4 = new TestFeatureConfig(storageProvider);
-
-	public TestConfig(StorageProvider storageProvider) {
+	public TestConfig(IStorageProvider storageProvider) {
 		super(storageProvider);
 	}
 }

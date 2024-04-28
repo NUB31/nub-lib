@@ -1,21 +1,20 @@
 package com.nublib.config;
 
 import com.nublib.config.annotation.ConfigOptionMetadata;
-import com.nublib.config.option.ConfigOption;
-import com.nublib.config.provider.StorageProvider;
+import com.nublib.config.provider.IStorageProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
 
 public abstract class Config {
-	protected StorageProvider storageProvider;
+	protected IStorageProvider storageProvider;
 
-	public Config(StorageProvider storageProvider) {
+	public Config(IStorageProvider storageProvider) {
 		this.storageProvider = storageProvider;
 	}
 
-	public @Nullable ConfigOptionMetadata getAnnotation(ConfigOption<?> option) {
+	public @Nullable ConfigOptionMetadata getMetadataForField(Object option) {
 		for (Field field : this.getClass().getDeclaredFields()) {
 			try {
 				if (Objects.equals(field.get(this), option)) {

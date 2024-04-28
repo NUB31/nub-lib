@@ -2,12 +2,13 @@ package com.nublib.config.screen;
 
 import com.nublib.NubLib;
 import com.nublib.config.Config;
-import com.nublib.config.option.ConfigOption;
+import com.nublib.config.option.IHasControl;
+import com.nublib.config.provider.IStorageProvider;
 import com.nublib.config.screen.elements.ConfigEntry;
 import com.nublib.config.screen.elements.ConfigList;
 import com.nublib.config.screen.page.ConfigPage;
+import com.nublib.config.screen.page.section.ConfigOption;
 import com.nublib.config.screen.page.section.ConfigSection;
-import com.nublib.config.screen.page.section.Option;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -38,7 +39,7 @@ public class ConfigScreen extends GameOptionsScreen {
 	public static ConfigScreen fromConfig(Screen parent, Config config) {
 		ConfigScreen screen = new ConfigScreen(parent);
 
-		screen.addFromConfig(config, Text.literal("Uncategorized"));
+		screen.generatePageFromConfig(config, Text.literal("Uncategorized"));
 
 		List<Field> pages = Arrays
 				.stream(config.getClass().getDeclaredFields())
@@ -55,7 +56,7 @@ public class ConfigScreen extends GameOptionsScreen {
 		pages.forEach(page -> {
 			try {
 				Config nestedConfig = (Config) page.get(config);
-				screen.addFromConfig(nestedConfig, Text.literal(nestedConfig.getClass().getSimpleName()));
+				screen.generatePageFromConfig(nestedConfig, Text.literal(nestedConfig.getClass().getSimpleName()));
 			} catch (Exception e) {
 				NubLib.LOGGER.warn(e.getMessage());
 			}
@@ -64,27 +65,25 @@ public class ConfigScreen extends GameOptionsScreen {
 		return screen;
 	}
 
-	private void addFromConfig(Config config, Text name) {
-		List<Field> fields = Arrays
-				.stream(config.getClass().getDeclaredFields())
-				.filter(field -> field.getType().isAssignableFrom(ConfigOption.class))
-				.toList();
+	private void generatePageFromConfig(Config config, Text name) {
+		Field[] fields = config.getClass().getDeclaredFields();
 
-		if (!fields.isEmpty()) {
+		if (fields.length != 0) {
 			addPage(name, page -> page
 					.addSection(Text.empty(), section -> {
 						for (Field field : fields) {
 							try {
-								ConfigOption<?> val = (ConfigOption<?>) field.get(config);
-								var metadata = config.getAnnotation(val);
-								Option option;
+								IHasControl<?> hasControl = (IHasControl<?>) field.get(config);
+								var metadata = config.getMetadataForField(hasControl);
+								ConfigOption<?> option;
 								if (metadata != null) {
-									option = new Option(val.getControl(), Text.literal(metadata.title()), Text.literal(metadata.description()));
+									option = new ConfigOption<>(hasControl.getControl(), Text.literal(metadata.title()), Text.literal(metadata.description()));
 								} else {
-									option = new Option(val.getControl(), Text.empty(), Text.empty());
+									option = new ConfigOption<>(hasControl.getControl(), Text.empty(), Text.empty());
 								}
 
 								section.addOption(option);
+							} catch (ClassCastException ignored) {
 							} catch (Exception e) {
 								NubLib.LOGGER.info(e.getMessage());
 							}
@@ -119,7 +118,25 @@ public class ConfigScreen extends GameOptionsScreen {
 		Text saveButtonText = Text.literal("Save");
 		int saveButtonWidth = textRenderer.getWidth(saveButtonText) + (paddingX * 2);
 
-		ButtonWidget saveButton = ButtonWidget.builder(saveButtonText, v -> close())
+		ButtonWidget saveButton = ButtonWidget
+				.builder(saveButtonText, v -> {
+					ArrayList<IStorageProvider> storageProviders = new ArrayList<>();
+
+					configPages
+							.forEach(page -> page
+									.getConfigSections()
+									.forEach(section -> section.
+											getOptions()
+											.forEach(configOption -> {
+												configOption.getControl().apply();
+												if (!storageProviders.contains(configOption.getControl().getStorageProvider())) {
+													storageProviders.add(configOption.getControl().getStorageProvider());
+												}
+											}))
+							);
+					storageProviders.forEach(IStorageProvider::save);
+					close();
+				})
 				.width(saveButtonWidth)
 				.position(width - paddingX - saveButtonWidth, height - ButtonWidget.DEFAULT_HEIGHT - paddingY)
 				.build();
@@ -136,6 +153,7 @@ public class ConfigScreen extends GameOptionsScreen {
 
 		addDrawableChild(closeButton);
 
+		// Prep left side
 		int x = paddingX;
 		int y = paddingY;
 		int width = Math.min(leftSidebarWidth, this.width - (2 * paddingX));
@@ -147,14 +165,7 @@ public class ConfigScreen extends GameOptionsScreen {
 		}
 
 		// Tabs
-//		TabManager tabManager = new TabManager(v -> {
-//		}, v -> {
-//		});
-//		TabButtonWidget tabButtonWidget = new TabButtonWidget(tabManager, );
-//		TabNavigationWidget tabNavigationWidget = TabNavigationWidget.builder(tabManager, width).tabs().build();
 		int currentButtonGroupWidth = 0;
-
-
 		for (ConfigPage configPage : configPages) {
 			ButtonWidget buttonWidget = ButtonWidget
 					.builder(configPage.getLabel(), v -> {
@@ -172,10 +183,11 @@ public class ConfigScreen extends GameOptionsScreen {
 			addDrawableChild(buttonWidget);
 
 			currentButtonGroupWidth += buttonWidget.getWidth() + paddingX;
-			if (currentButtonGroupWidth > width && configPage != configPages.get(0)) {
+			if (currentButtonGroupWidth - (2 * paddingX) > width && configPage != configPages.get(0)) {
 				y += ButtonWidget.DEFAULT_HEIGHT + paddingY;
 				x = paddingX;
 				buttonWidget.setPosition(x, y);
+				currentButtonGroupWidth = buttonWidget.getWidth() + paddingX;
 			}
 
 			x += buttonWidget.getWidth() + 5;
@@ -184,8 +196,6 @@ public class ConfigScreen extends GameOptionsScreen {
 		y += ButtonWidget.DEFAULT_HEIGHT + paddingY;
 		x = paddingX;
 		height -= (paddingY + ButtonWidget.DEFAULT_HEIGHT);
-
-		// Config list
 
 		if (selectedConfigPage != null) {
 			for (ConfigSection section : selectedConfigPage.getConfigSections()) {
@@ -197,8 +207,8 @@ public class ConfigScreen extends GameOptionsScreen {
 
 				var configList = new ConfigList(width, height, x, y, 100);
 
-				for (Option option : section.getOptions()) {
-					configList.children().add(new ConfigEntry(option, textRenderer));
+				for (ConfigOption configOption : section.getOptions()) {
+					configList.children().add(new ConfigEntry(configOption, textRenderer));
 				}
 
 				addDrawableChild(configList);
@@ -212,7 +222,7 @@ public class ConfigScreen extends GameOptionsScreen {
 		y = paddingY;
 
 		if (width > 0) {
-			TextFieldWidget widget = new TextFieldWidget(textRenderer, x, y, width, height, Text.literal("kfjdhgkjdfhg"));
+			TextFieldWidget widget = new TextFieldWidget(textRenderer, x, y, width, height, Text.empty());
 			addDrawableChild(widget);
 		}
 	}

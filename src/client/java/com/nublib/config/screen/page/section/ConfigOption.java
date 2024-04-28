@@ -1,20 +1,20 @@
 package com.nublib.config.screen.page.section;
 
-import com.nublib.config.screen.page.section.control.IControl;
+import com.nublib.config.screen.page.section.control.Control;
 import net.minecraft.text.Text;
 
-public class Option {
-	private final IControl control;
+public class ConfigOption<T> {
+	private final Control<T> control;
 	private final Text label;
 	private final Text description;
 
-	public Option(IControl control, Text label, Text description) {
+	public ConfigOption(Control<T> control, Text label, Text description) {
 		this.control = control;
 		this.label = label;
 		this.description = description;
 	}
 
-	public IControl getControl() {
+	public Control<T> getControl() {
 		return control;
 	}
 

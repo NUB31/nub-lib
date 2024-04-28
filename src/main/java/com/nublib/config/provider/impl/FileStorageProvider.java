@@ -45,27 +45,14 @@ public class FileStorageProvider extends StorageProvider {
 		return Optional.empty();
 	}
 
-	@Override
-	protected Optional<String> getImpl(String key) {
-		var value = config.get(key);
-		return Optional.ofNullable(value);
-	}
-
-	@Override
-	protected void setImpl(String key, String value) {
-		config.put(key, value);
-
-		try {
-			save();
-		} catch (IOException e) {
-			NubLib.LOGGER.error("Failed to save configuration", e);
-		}
-	}
-
-	private void save() throws IOException {
+	public void save() {
 		final LinkedList<String> content = new LinkedList<>();
 		config.forEach((k, v) -> content.add(String.format("%s=%s", k, v)));
 
-		Files.writeString(file.toPath(), String.join("\n", content));
+		try {
+			Files.writeString(file.toPath(), String.join("\n", content));
+		} catch (IOException e) {
+			NubLib.LOGGER.error(String.format("Failed to save configuration `%s`", file.toPath()));
+		}
 	}
 }

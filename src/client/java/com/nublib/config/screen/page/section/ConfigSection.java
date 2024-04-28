@@ -7,15 +7,15 @@ import java.util.List;
 
 public class ConfigSection {
 	private final Text label;
-	private final List<Option> options;
+	private final List<ConfigOption<?>> configOptions;
 
 	public ConfigSection(Text label) {
 		this.label = label;
-		options = new ArrayList<>();
+		configOptions = new ArrayList<>();
 	}
 
-	public ConfigSection addOption(Option option) {
-		options.add(option);
+	public ConfigSection addOption(ConfigOption<?> configOption) {
+		configOptions.add(configOption);
 		return this;
 	}
 
@@ -23,7 +23,7 @@ public class ConfigSection {
 		return label;
 	}
 
-	public List<Option> getOptions() {
-		return options;
+	public List<ConfigOption<?>> getOptions() {
+		return configOptions;
 	}
 }

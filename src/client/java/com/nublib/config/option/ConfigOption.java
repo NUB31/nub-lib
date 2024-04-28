@@ -1,84 +1,38 @@
 package com.nublib.config.option;
 
-import com.nublib.config.provider.StorageProvider;
-import com.nublib.config.screen.page.section.control.IControl;
-import com.nublib.config.screen.page.section.control.TextFieldControl;
-import com.nublib.config.screen.page.section.control.ToggleControl;
-import com.nublib.config.serialization.BooleanSerializer;
+import com.nublib.config.provider.IStorageProvider;
+import com.nublib.config.screen.page.section.control.Control;
 import com.nublib.config.serialization.ISerializer;
-import com.nublib.config.serialization.IntegerSerializer;
-import com.nublib.config.serialization.StringSerializer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
 
-public class ConfigOption<T> {
-	private final StorageProvider storageProvider;
-	private final T defaultValue;
+public abstract class ConfigOption<T> implements IConfigOption<T> {
 	private final ISerializer<T> serializer;
-	private final String key;
-	private final IControl control;
+	protected T defaultValue;
+	protected String key;
+	protected IStorageProvider storageProvider;
+	protected Control<T> control;
 
-	public ConfigOption(StorageProvider storageProvider, String key, T defaultValue, ISerializer<T> serializer, IControl control) {
-		this.storageProvider = storageProvider;
-		this.defaultValue = defaultValue;
-		this.serializer = serializer;
+	public ConfigOption(String key, T defaultValue, IStorageProvider storageProvider, ISerializer<T> serializer) {
 		this.key = key;
-		this.control = control;
-
-		if (storageProvider.get(key).isEmpty()) {
-			set(defaultValue);
-		}
-	}
-
-	public ConfigOption(StorageProvider storageProvider, String key, T defaultValue, ISerializer<T> serializer) {
-		this.storageProvider = storageProvider;
 		this.defaultValue = defaultValue;
+		this.storageProvider = storageProvider;
 		this.serializer = serializer;
-		this.key = key;
-		this.control = (textRenderer, x, y, width, height) -> new ClickableWidget(x, y, width, height, Text.empty()) {
-			@Override
-			protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-			}
-
-			@Override
-			protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-			}
-		};
-
-		if (storageProvider.get(key).isEmpty()) {
-			set(defaultValue);
-		}
 	}
 
-	public static ConfigOption<String> String(StorageProvider storageProvider, String key, String defaultValue) {
-		return new ConfigOption<>(storageProvider, key, defaultValue, new StringSerializer(), new TextFieldControl(defaultValue));
-	}
-
-	public static ConfigOption<Boolean> Boolean(StorageProvider storageProvider, String key, Boolean defaultValue) {
-		return new ConfigOption<>(storageProvider, key, defaultValue, new BooleanSerializer(), new ToggleControl(defaultValue));
-	}
-
-	public static ConfigOption<Integer> Integer(StorageProvider storageProvider, String key, Integer defaultValue) {
-		return new ConfigOption<>(storageProvider, key, defaultValue, new IntegerSerializer(), new TextFieldControl(defaultValue.toString()));
-	}
-
+	@Override
 	public T get() {
 		return storageProvider.get(key)
 				.flatMap(serializer::parse)
 				.orElse(defaultValue);
 	}
 
+	@Override
 	public void set(T value) {
+		this.defaultValue = value;
 		storageProvider.set(key, serializer.serialize(value));
 	}
 
-	public IControl getControl() {
-		return control;
-	}
-
-	public String getKey() {
+	@Override
+	public String key() {
 		return key;
 	}
 }
