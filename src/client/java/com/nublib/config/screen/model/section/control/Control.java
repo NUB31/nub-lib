@@ -1,4 +1,4 @@
-package com.nublib.config.screen.page.section.control;
+package com.nublib.config.screen.model.section.control;
 
 import com.nublib.config.provider.IStorageProvider;
 import com.nublib.config.serialization.ISerializer;
@@ -50,4 +50,10 @@ public abstract class Control<T> {
 				.flatMap(serializer::parse)
 				.orElse(defaultValue);
 	}
+
+	public void reset() {
+		setWidgetValue(getProviderValue());
+	}
+
+	protected abstract void setWidgetValue(T value);
 }

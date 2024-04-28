@@ -1,8 +1,8 @@
 package com.nublib.config.option;
 
 import com.nublib.config.provider.IStorageProvider;
-import com.nublib.config.screen.page.section.control.Control;
-import com.nublib.config.screen.page.section.control.ToggleControl;
+import com.nublib.config.screen.model.section.control.Control;
+import com.nublib.config.screen.model.section.control.ToggleControl;
 import com.nublib.config.serialization.BooleanSerializer;
 
 public class BooleanConfigOption extends ConfigOption<Boolean> implements IHasControl<Boolean> {

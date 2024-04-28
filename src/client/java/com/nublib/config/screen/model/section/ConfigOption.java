@@ -1,6 +1,6 @@
-package com.nublib.config.screen.page.section;
+package com.nublib.config.screen.model.section;
 
-import com.nublib.config.screen.page.section.control.Control;
+import com.nublib.config.screen.model.section.control.Control;
 import net.minecraft.text.Text;
 
 public class ConfigOption<T> {

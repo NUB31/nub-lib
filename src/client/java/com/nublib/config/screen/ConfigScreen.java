@@ -6,9 +6,9 @@ import com.nublib.config.option.IHasControl;
 import com.nublib.config.provider.IStorageProvider;
 import com.nublib.config.screen.elements.ConfigEntry;
 import com.nublib.config.screen.elements.ConfigList;
-import com.nublib.config.screen.page.ConfigPage;
-import com.nublib.config.screen.page.section.ConfigOption;
-import com.nublib.config.screen.page.section.ConfigSection;
+import com.nublib.config.screen.model.ConfigPage;
+import com.nublib.config.screen.model.section.ConfigOption;
+import com.nublib.config.screen.model.section.ConfigSection;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -63,6 +63,19 @@ public class ConfigScreen extends GameOptionsScreen {
 		});
 
 		return screen;
+	}
+
+	public ConfigScreen reset() {
+		configPages
+				.forEach(configPage -> configPage
+						.getConfigSections()
+						.forEach(configSection -> configSection
+								.getOptions()
+								.forEach(configOption -> configOption
+										.getControl()
+										.reset())));
+
+		return this;
 	}
 
 	private void generatePageFromConfig(Config config, Text name) {
@@ -132,8 +145,8 @@ public class ConfigScreen extends GameOptionsScreen {
 												if (!storageProviders.contains(configOption.getControl().getStorageProvider())) {
 													storageProviders.add(configOption.getControl().getStorageProvider());
 												}
-											}))
-							);
+											})));
+					
 					storageProviders.forEach(IStorageProvider::save);
 					close();
 				})

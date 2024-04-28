@@ -1,6 +1,6 @@
 package com.nublib.config.option;
 
-import com.nublib.config.screen.page.section.control.Control;
+import com.nublib.config.screen.model.section.control.Control;
 
 public interface IHasControl<T> {
 	Control<T> getControl();

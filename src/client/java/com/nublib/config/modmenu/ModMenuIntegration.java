@@ -10,6 +10,6 @@ public interface ModMenuIntegration extends ModMenuApi {
 
 	@Override
 	default ConfigScreenFactory<ConfigScreen> getModConfigScreenFactory() {
-		return screen -> ConfigScreen.fromConfig(screen, getConfig());
+		return screen -> ConfigScreen.fromConfig(screen, getConfig()).reset();
 	}
 }

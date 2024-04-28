@@ -1,4 +1,4 @@
-package com.nublib.config.screen.page.section;
+package com.nublib.config.screen.model.section;
 
 import net.minecraft.text.Text;
 

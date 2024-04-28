@@ -1,6 +1,6 @@
 package com.nublib.config.screen.elements;
 
-import com.nublib.config.screen.page.section.ConfigOption;
+import com.nublib.config.screen.model.section.ConfigOption;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;

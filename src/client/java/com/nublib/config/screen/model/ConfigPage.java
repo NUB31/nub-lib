@@ -1,6 +1,6 @@
-package com.nublib.config.screen.page;
+package com.nublib.config.screen.model;
 
-import com.nublib.config.screen.page.section.ConfigSection;
+import com.nublib.config.screen.model.section.ConfigSection;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
