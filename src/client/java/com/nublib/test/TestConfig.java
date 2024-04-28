@@ -10,6 +10,9 @@ public class TestConfig extends Config {
 	public final ConfigOption<Boolean> isStupid = ConfigOption.Boolean(storageProvider, "isStupid", true);
 
 	public TestFeatureConfig config = new TestFeatureConfig(storageProvider);
+	public TestFeatureConfig config2 = new TestFeatureConfig(storageProvider);
+	public TestFeatureConfig config3 = new TestFeatureConfig(storageProvider);
+	public TestFeatureConfig config4 = new TestFeatureConfig(storageProvider);
 
 	public TestConfig(StorageProvider storageProvider) {
 		super(storageProvider);

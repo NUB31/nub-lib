@@ -43,7 +43,7 @@ public class ConfigEntry extends ElementListWidget.Entry<ConfigEntry> {
 
 		int dynamicY = y + 10;
 		int dynamicX = x + 10;
-		int dynamicWidth = entryWidth - 20;
+		int dynamicWidth = entryWidth - 20 - 8; // -8 to compensate for scrollbar width
 		int dynamicHeight = entryHeight - 20;
 
 		option.getControl().getWidget(textRenderer, dynamicX, dynamicY + dynamicHeight - 20, dynamicWidth, 20).render(context, mouseX, mouseY, tickDelta);

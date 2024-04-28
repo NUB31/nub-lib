@@ -12,6 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -138,10 +139,21 @@ public class ConfigScreen extends GameOptionsScreen {
 		int x = paddingX;
 		int y = paddingY;
 		int width = Math.min(leftSidebarWidth, this.width - (2 * paddingX));
-		int height = this.height - (3 * paddingY) - Math.max(closeButton.getHeight(), saveButton.getHeight());
+		int height = this.height - (2 * paddingY);
+
+		// if the left sidebar overlaps with the buttons, reduce the height of the left sidebar
+		if (this.width - (4 * paddingX) - closeButtonWidth - saveButtonWidth < width) {
+			height -= (paddingX + ButtonWidget.DEFAULT_HEIGHT);
+		}
 
 		// Tabs
+//		TabManager tabManager = new TabManager(v -> {
+//		}, v -> {
+//		});
+//		TabButtonWidget tabButtonWidget = new TabButtonWidget(tabManager, );
+//		TabNavigationWidget tabNavigationWidget = TabNavigationWidget.builder(tabManager, width).tabs().build();
 		int currentButtonGroupWidth = 0;
+
 
 		for (ConfigPage configPage : configPages) {
 			ButtonWidget buttonWidget = ButtonWidget
@@ -159,7 +171,7 @@ public class ConfigScreen extends GameOptionsScreen {
 
 			addDrawableChild(buttonWidget);
 
-			currentButtonGroupWidth += buttonWidget.getWidth();
+			currentButtonGroupWidth += buttonWidget.getWidth() + paddingX;
 			if (currentButtonGroupWidth > width && configPage != configPages.get(0)) {
 				y += ButtonWidget.DEFAULT_HEIGHT + paddingY;
 				x = paddingX;
@@ -193,15 +205,15 @@ public class ConfigScreen extends GameOptionsScreen {
 			}
 		}
 
-		// There is space left on the right, render a right pane
-		if (width >= leftSidebarWidth) {
-			x = (2 * paddingX) + width;
-			y = paddingY;
+		// Right sidebar
+		width = this.width - leftSidebarWidth - (3 * paddingX);
+		height = this.height - (3 * paddingY) - ButtonWidget.DEFAULT_HEIGHT;
+		x = leftSidebarWidth + (2 * paddingX);
+		y = paddingY;
 
-			// Remaining screen space minus padding;
-			width = -(3 * paddingX);
-
-			// TODO: Add customizable sidebar
+		if (width > 0) {
+			TextFieldWidget widget = new TextFieldWidget(textRenderer, x, y, width, height, Text.literal("kfjdhgkjdfhg"));
+			addDrawableChild(widget);
 		}
 	}
 }
