@@ -6,13 +6,12 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 public abstract class Control<T> {
 	protected String key;
 	@Nullable
 	protected ClickableWidget widget;
 	protected T defaultValue;
+	protected T value;
 	protected IStorageProvider storageProvider;
 	protected ISerializer<T> serializer;
 
@@ -21,34 +20,25 @@ public abstract class Control<T> {
 		this.storageProvider = storageProvider;
 		this.serializer = serializer;
 		this.defaultValue = defaultValue;
+		this.value = getProviderValue();
 	}
 
-	protected abstract ClickableWidget createWidget(TextRenderer textRenderer, int x, int y, int width, int height);
+	protected abstract ClickableWidget getWidget(TextRenderer textRenderer, int x, int y, int width, int height);
 
 	public ClickableWidget getOrCreateWidget(TextRenderer textRenderer, int x, int y, int width, int height) {
 		if (widget == null) {
-			widget = createWidget(textRenderer, x, y, width, height);
+			widget = getWidget(textRenderer, x, y, width, height);
 		}
 
-		return getWidget(x, y, width, height).orElse(widget);
-	}
-
-	public Optional<ClickableWidget> getWidget() {
-		return Optional.ofNullable(widget);
-	}
-
-	public Optional<ClickableWidget> getWidget(int x, int y, int width, int height) {
-		if (widget == null) return Optional.empty();
 		widget.setX(x);
 		widget.setY(y);
 		widget.setWidth(width);
 		widget.setHeight(height);
-		return Optional.of(widget);
+		return widget;
 	}
 
 	public void apply() {
-		Optional<T> value = getValue();
-		value.ifPresent(v -> storageProvider.set(key, serializer.serialize(v)));
+		storageProvider.set(key, serializer.serialize(value));
 	}
 
 	public IStorageProvider getStorageProvider() {
@@ -60,6 +50,4 @@ public abstract class Control<T> {
 				.flatMap(serializer::parse)
 				.orElse(defaultValue);
 	}
-
-	protected abstract Optional<T> getValue();
 }

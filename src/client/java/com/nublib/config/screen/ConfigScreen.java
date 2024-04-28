@@ -207,7 +207,7 @@ public class ConfigScreen extends GameOptionsScreen {
 
 				var configList = new ConfigList(width, height, x, y, 100);
 
-				for (ConfigOption configOption : section.getOptions()) {
+				for (ConfigOption<?> configOption : section.getOptions()) {
 					configList.children().add(new ConfigEntry(configOption, textRenderer));
 				}
 

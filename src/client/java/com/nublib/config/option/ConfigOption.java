@@ -1,7 +1,6 @@
 package com.nublib.config.option;
 
 import com.nublib.config.provider.IStorageProvider;
-import com.nublib.config.screen.page.section.control.Control;
 import com.nublib.config.serialization.ISerializer;
 
 public abstract class ConfigOption<T> implements IConfigOption<T> {
@@ -9,7 +8,6 @@ public abstract class ConfigOption<T> implements IConfigOption<T> {
 	protected T defaultValue;
 	protected String key;
 	protected IStorageProvider storageProvider;
-	protected Control<T> control;
 
 	public ConfigOption(String key, T defaultValue, IStorageProvider storageProvider, ISerializer<T> serializer) {
 		this.key = key;

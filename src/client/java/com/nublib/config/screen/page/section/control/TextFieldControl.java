@@ -8,8 +8,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 public class TextFieldControl extends Control<String> {
 	@Nullable TextFieldWidget widget;
 
@@ -18,15 +16,10 @@ public class TextFieldControl extends Control<String> {
 	}
 
 	@Override
-	public ClickableWidget createWidget(TextRenderer textRenderer, int x, int y, int width, int height) {
+	public ClickableWidget getWidget(TextRenderer textRenderer, int x, int y, int width, int height) {
 		widget = new TextFieldWidget(textRenderer, x, y, width, height, Text.literal(getProviderValue()));
-		widget.setText(getProviderValue());
+		widget.setText(value);
+		widget.setChangedListener((v) -> value = v);
 		return widget;
-	}
-
-	@Override
-	protected Optional<String> getValue() {
-		if (widget == null) return Optional.empty();
-		return Optional.of(widget.getText());
 	}
 }
