@@ -1,4 +1,4 @@
-name: Publish on GitHub & Modrinth
+name: Publish beta on Modrinth
 
 on:
     push:
