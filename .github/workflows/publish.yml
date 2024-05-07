@@ -40,10 +40,10 @@ jobs:
                   modrinth-token: ${{secrets.MODRINTH_TOKEN}}
                 
                   name: "NUB lib ${{github.ref_name}}-${{vars.MINECRAFT_VERSION}}"
-                  version: "${{env.VERSION}}"
+                  version: "${{vars.MOD_VERSION}}"
                   version-type: release
                   changelog-file: CHANGELOG.md
                 
                   loaders: fabric
-                  game-versions: "${{env.MINECRAFT_VERSION}}"
+                  game-versions: "${{vars.MINECRAFT_VERSION}}"
                   java: ${{vars.JAVA_VERSION}}
