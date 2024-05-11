@@ -2,7 +2,6 @@ package com.nublib.gui;
 
 import com.nublib.gui.widget.ConfigEntryList;
 import com.nublib.gui.widget.ConfigEntryWidget;
-import com.nublib.gui.widget.entry.GuiConfigEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -11,29 +10,56 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConfigScreen extends GameOptionsScreen {
 	private final Runnable onSave;
 	private final Runnable onCancel;
-	private final List<GuiConfigEntry> configEntries;
-	private ConfigEntryList entryWidget;
+	private final List<ConfigPage> configPages;
+	private final Map<ConfigPage, ButtonWidget> tabButtons;
+	@Nullable
+	private ConfigPage selectedConfigPage;
+	@Nullable
+	private ConfigEntryList configEntryListWidget;
 
-	public ConfigScreen(Screen parent, Text title, Runnable onSave, Runnable onCancel, List<GuiConfigEntry> configEntries, String modId) {
+
+	public ConfigScreen(Screen parent, Text title, Runnable onSave, Runnable onCancel, List<ConfigPage> configPages) {
 		super(parent, MinecraftClient.getInstance().options, title);
 		this.onSave = onSave;
 		this.onCancel = onCancel;
-		this.configEntries = configEntries;
+		this.configPages = configPages;
+		this.tabButtons = new HashMap<>();
 	}
 
 	public static ConfigScreenBuilder builder(Screen parent, String modId) {
 		return new ConfigScreenBuilder(parent, modId);
 	}
 
-	protected void refreshSize() {
-		entryWidget.setWidth(layout.getWidth());
-		entryWidget.setHeight(layout.getContentHeight());
+	private void refreshPage(ConfigPage page) {
+		selectedConfigPage = page;
+
+		if (selectedConfigPage != null && configEntryListWidget != null) {
+			configEntryListWidget.children().clear();
+			selectedConfigPage.configEntries().forEach(entry -> configEntryListWidget.children().add(new ConfigEntryWidget(entry)));
+		}
+	}
+
+	@Override
+	protected void initHeader() {
+		for (ConfigPage configPage : configPages) {
+			tabButtons.put(configPage, ButtonWidget.builder(configPage.title(), button -> {
+				refreshPage(configPage);
+			}).width(100).build());
+		}
+
+		DirectionalLayoutWidget buttonPositioningWidget = layout.addHeader(DirectionalLayoutWidget.horizontal().spacing(4));
+		if (buttonPositioningWidget != null) {
+			tabButtons.forEach((k, v) -> buttonPositioningWidget.add(v));
+		}
 	}
 
 	@Override
@@ -45,15 +71,25 @@ public class ConfigScreen extends GameOptionsScreen {
 
 	@Override
 	protected void init() {
-		entryWidget = new ConfigEntryList(MinecraftClient.getInstance(), layout.getWidth(), layout.getContentHeight(), 0, 100);
-		configEntries.forEach(configEntry -> entryWidget.children().add(new ConfigEntryWidget(configEntry)));
-		layout.addBody(entryWidget);
+		configEntryListWidget = new ConfigEntryList(MinecraftClient.getInstance(), layout.getWidth(), layout.getContentHeight(), 0, 100);
+		layout.addBody(configEntryListWidget);
+
+		if (!configPages.isEmpty()) {
+			refreshPage(configPages.getFirst());
+		}
+		
 		super.init();
 	}
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		refreshSize();
+		tabButtons.forEach((k, v) -> v.active = selectedConfigPage != k);
+
+		if (configEntryListWidget != null) {
+			configEntryListWidget.setWidth(layout.getWidth());
+			configEntryListWidget.setHeight(layout.getContentHeight());
+		}
+
 		super.render(context, mouseX, mouseY, delta);
 	}
 
