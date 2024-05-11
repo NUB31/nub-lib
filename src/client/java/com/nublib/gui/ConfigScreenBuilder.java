@@ -19,12 +19,15 @@ public class ConfigScreenBuilder {
 	private final Screen parent;
 	private final List<GuiConfigEntry> configEntries;
 	private final String modId;
-	private Runnable onClose;
+	private Runnable onSave;
+	private Runnable onCancel;
 	private Text title;
 
 	public ConfigScreenBuilder(Screen parent, String modId) {
 		this.parent = parent;
-		this.onClose = () -> {
+		this.onSave = () -> {
+		};
+		this.onCancel = () -> {
 		};
 		this.configEntries = new ArrayList<>();
 		this.title = Text.literal(String.format("Mod options for %s", modId));
@@ -32,7 +35,12 @@ public class ConfigScreenBuilder {
 	}
 
 	public ConfigScreenBuilder onSave(Runnable delegate) {
-		onClose = delegate;
+		onSave = delegate;
+		return this;
+	}
+
+	public ConfigScreenBuilder onCancel(Runnable delegate) {
+		onCancel = delegate;
 		return this;
 	}
 
@@ -85,6 +93,6 @@ public class ConfigScreenBuilder {
 	}
 
 	public ConfigScreen build() {
-		return new ConfigScreen(parent, title, onClose, configEntries, modId);
+		return new ConfigScreen(parent, title, onSave, onCancel, configEntries, modId);
 	}
 }

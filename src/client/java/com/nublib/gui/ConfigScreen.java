@@ -7,18 +7,23 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
 import java.util.List;
 
 public class ConfigScreen extends GameOptionsScreen {
-	private final Runnable onClose;
+	private final Runnable onSave;
+	private final Runnable onCancel;
 	private final List<GuiConfigEntry> configEntries;
 	private ConfigEntryList entryWidget;
 
-	public ConfigScreen(Screen parent, Text title, Runnable onClose, List<GuiConfigEntry> configEntries, String modId) {
+	public ConfigScreen(Screen parent, Text title, Runnable onSave, Runnable onCancel, List<GuiConfigEntry> configEntries, String modId) {
 		super(parent, MinecraftClient.getInstance().options, title);
-		this.onClose = onClose;
+		this.onSave = onSave;
+		this.onCancel = onCancel;
 		this.configEntries = configEntries;
 	}
 
@@ -29,6 +34,13 @@ public class ConfigScreen extends GameOptionsScreen {
 	protected void refreshSize() {
 		entryWidget.setWidth(layout.getWidth());
 		entryWidget.setHeight(layout.getContentHeight());
+	}
+
+	@Override
+	protected void initFooter() {
+		DirectionalLayoutWidget directionalLayoutWidget = layout.addFooter(DirectionalLayoutWidget.horizontal().spacing(8));
+		directionalLayoutWidget.add(ButtonWidget.builder(ScreenTexts.CANCEL, (button) -> close(false)).build());
+		directionalLayoutWidget.add(ButtonWidget.builder(ScreenTexts.DONE, (button) -> close(true)).build());
 	}
 
 	@Override
@@ -45,9 +57,18 @@ public class ConfigScreen extends GameOptionsScreen {
 		super.render(context, mouseX, mouseY, delta);
 	}
 
+	private void close(boolean save) {
+		if (save) {
+			onSave.run();
+			super.close();
+		} else {
+			onCancel.run();
+			super.close();
+		}
+	}
+
 	@Override
 	public void close() {
-		onClose.run();
-		super.close();
+		close(true);
 	}
 }

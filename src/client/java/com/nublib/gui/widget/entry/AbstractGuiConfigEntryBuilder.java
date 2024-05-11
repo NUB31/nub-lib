@@ -16,6 +16,8 @@ public abstract class AbstractGuiConfigEntryBuilder<T> {
 		this.description = Text.empty();
 		this.defaultValue = defaultValue;
 		this.key = key;
+		this.onChange = v -> {
+		};
 	}
 
 	public AbstractGuiConfigEntryBuilder<T> setTitle(Text title) {
