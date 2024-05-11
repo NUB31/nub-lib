@@ -14,6 +14,10 @@ public abstract class Config {
 		this.storageProvider = storageProvider;
 	}
 
+	public void save() {
+		storageProvider.save();
+	}
+
 	public @Nullable ConfigOptionMetadata getMetadataForField(Object option) {
 		for (Field field : this.getClass().getDeclaredFields()) {
 			try {
