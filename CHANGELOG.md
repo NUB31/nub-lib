@@ -1,1 +1,2 @@
-Update config generator to work better with 1.20.6
+Update Toggle and enum widgets to use a custom style
+Fix bug where config page tabs appeared in random order
