@@ -12,7 +12,7 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public class ConfigScreen extends GameOptionsScreen {
 		this.onSave = onSave;
 		this.onCancel = onCancel;
 		this.configPages = configPages;
-		this.tabButtons = new HashMap<>();
+		this.tabButtons = new LinkedHashMap<>();
 	}
 
 	private void refreshPage(ConfigPage page) {
