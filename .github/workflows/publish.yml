@@ -1,4 +1,4 @@
-name: Publish on Modrinth
+name: Publish beta on Modrinth
 
 on:
     push:
@@ -39,11 +39,7 @@ jobs:
                   modrinth-id: ${{vars.MODRINTH_ID}}
                   modrinth-token: ${{secrets.MODRINTH_TOKEN}}
                 
-                  name: "NUB lib ${{github.ref_name}}-${{vars.MINECRAFT_VERSION}}"
-                  version: "${{github.ref_name}}"
+                  name: "${{vars.MOD_NAME}} ${{github.ref_name}}-${{vars.MINECRAFT_VERSION}}"
                   version-type: release
                   changelog-file: CHANGELOG.md
-                
-                  loaders: fabric
-                  game-versions: "${{vars.MINECRAFT_VERSION}}"
                   java: ${{vars.JAVA_VERSION}}
