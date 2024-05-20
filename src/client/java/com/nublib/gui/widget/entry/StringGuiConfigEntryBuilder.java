@@ -1,6 +1,7 @@
 package com.nublib.gui.widget.entry;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 
 public class StringGuiConfigEntryBuilder extends AbstractGuiConfigEntryBuilder<String> {
@@ -9,10 +10,10 @@ public class StringGuiConfigEntryBuilder extends AbstractGuiConfigEntryBuilder<S
 	}
 
 	@Override
-	public GuiConfigEntry build() {
+	public ClickableWidget createWidget() {
 		TextFieldWidget widget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 200, 20, title);
 		widget.setText(defaultValue);
 		widget.setChangedListener(onChange);
-		return new GuiConfigEntry(title, description, widget);
+		return widget;
 	}
 }

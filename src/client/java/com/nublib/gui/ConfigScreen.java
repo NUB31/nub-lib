@@ -18,23 +18,22 @@ import java.util.Map;
 
 public class ConfigScreen extends GameOptionsScreen {
 	private final Runnable onSave;
+	@Nullable
 	private final Runnable onCancel;
 	private final List<ConfigPage> configPages;
 	private final Map<ConfigPage, ButtonWidget> tabButtons;
-	private final Boolean cancelButton;
 	@Nullable
 	private ConfigPage selectedConfigPage;
 	@Nullable
 	private ConfigEntryList configEntryListWidget;
 
 
-	public ConfigScreen(Screen parent, Runnable onSave, Runnable onCancel, List<ConfigPage> configPages, Boolean cancelButton) {
+	public ConfigScreen(Screen parent, Runnable onSave, @Nullable Runnable onCancel, List<ConfigPage> configPages) {
 		super(parent, MinecraftClient.getInstance().options, Text.literal("Options"));
 		this.onSave = onSave;
 		this.onCancel = onCancel;
 		this.configPages = configPages;
 		this.tabButtons = new HashMap<>();
-		this.cancelButton = cancelButton;
 	}
 
 	private void refreshPage(ConfigPage page) {
@@ -63,7 +62,7 @@ public class ConfigScreen extends GameOptionsScreen {
 	@Override
 	protected void initFooter() {
 		DirectionalLayoutWidget directionalLayoutWidget = layout.addFooter(DirectionalLayoutWidget.horizontal().spacing(8));
-		if (cancelButton) {
+		if (onCancel != null) {
 			directionalLayoutWidget.add(ButtonWidget.builder(ScreenTexts.CANCEL, (button) -> close(false)).build());
 		}
 		directionalLayoutWidget.add(ButtonWidget.builder(ScreenTexts.DONE, (button) -> close(true)).build());
@@ -98,7 +97,9 @@ public class ConfigScreen extends GameOptionsScreen {
 			onSave.run();
 			super.close();
 		} else {
-			onCancel.run();
+			if (onCancel != null) {
+				onCancel.run();
+			}
 			super.close();
 		}
 	}

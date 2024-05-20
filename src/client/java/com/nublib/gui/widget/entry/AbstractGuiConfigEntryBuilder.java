@@ -1,6 +1,8 @@
 package com.nublib.gui.widget.entry;
 
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -10,6 +12,7 @@ public abstract class AbstractGuiConfigEntryBuilder<T> {
 	protected Consumer<T> onChange;
 	protected T defaultValue;
 	protected String key;
+	protected @Nullable Runnable resetDelegate;
 
 	public AbstractGuiConfigEntryBuilder(String key, T defaultValue) {
 		this.title = Text.empty();
@@ -18,10 +21,16 @@ public abstract class AbstractGuiConfigEntryBuilder<T> {
 		this.key = key;
 		this.onChange = v -> {
 		};
+		this.resetDelegate = null;
 	}
 
 	public AbstractGuiConfigEntryBuilder<T> setTitle(Text title) {
 		this.title = title;
+		return this;
+	}
+
+	public AbstractGuiConfigEntryBuilder<T> setResetDelegate(Runnable delegate) {
+		this.resetDelegate = delegate;
 		return this;
 	}
 
@@ -35,5 +44,9 @@ public abstract class AbstractGuiConfigEntryBuilder<T> {
 		return this;
 	}
 
-	public abstract GuiConfigEntry build();
+	public abstract ClickableWidget createWidget();
+
+	public GuiConfigEntry build() {
+		return new GuiConfigEntry(title, description, createWidget(), resetDelegate);
+	}
 }

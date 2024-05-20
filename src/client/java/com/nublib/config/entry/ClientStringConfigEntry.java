@@ -19,6 +19,7 @@ public class ClientStringConfigEntry extends StringConfigEntry implements IClien
 	public GuiConfigEntry guiConfigEntry() {
 		return new StringGuiConfigEntryBuilder(key, get())
 				.onChange(this::set)
+				.setResetDelegate(() -> set(defaultValue))
 				.setTitle(title)
 				.setDescription(description)
 				.build();

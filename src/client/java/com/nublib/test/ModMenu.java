@@ -11,6 +11,11 @@ public class ModMenu implements ModMenuApi {
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
 		return screen -> new ConfigScreenBuilder(screen)
 				.fromConfig(Text.literal("NubLib config"), NubLibClient.CONFIG)
-				.onSave(NubLibClient.CONFIG::save).build();
+				.addPage(Text.literal("UwU"), page -> page
+						.addToggle("test", true, entry -> entry
+								.setTitle(Text.literal("TITLE"))
+						))
+				.onSave(NubLibClient.CONFIG::save)
+				.build();
 	}
 }

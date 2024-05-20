@@ -5,6 +5,7 @@ import com.nublib.config.Config;
 import com.nublib.config.entry.IClientConfigEntry;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,17 +16,15 @@ public class ConfigScreenBuilder {
 	private final Screen parent;
 	private final List<ConfigPage> configPages;
 	private Runnable onSave;
+	@Nullable
 	private Runnable onCancel;
-	private Boolean hasCancelButton;
 
 	public ConfigScreenBuilder(Screen parent) {
 		this.parent = parent;
 		this.onSave = () -> {
 		};
-		this.onCancel = () -> {
-		};
+		this.onCancel = null;
 		this.configPages = new ArrayList<>();
-		this.hasCancelButton = false;
 	}
 
 	public ConfigScreenBuilder onSave(Runnable delegate) {
@@ -34,7 +33,6 @@ public class ConfigScreenBuilder {
 	}
 
 	public ConfigScreenBuilder onCancel(Runnable delegate) {
-		hasCancelButton = true;
 		onCancel = delegate;
 		return this;
 	}
@@ -61,6 +59,6 @@ public class ConfigScreenBuilder {
 	}
 
 	public ConfigScreen build() {
-		return new ConfigScreen(parent, onSave, onCancel, configPages, hasCancelButton);
+		return new ConfigScreen(parent, onSave, onCancel, configPages);
 	}
 }

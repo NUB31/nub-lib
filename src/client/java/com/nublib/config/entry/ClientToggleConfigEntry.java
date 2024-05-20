@@ -17,6 +17,11 @@ public class ClientToggleConfigEntry extends BooleanConfigEntry implements IClie
 
 	@Override
 	public GuiConfigEntry guiConfigEntry() {
-		return new ToggleGuiConfigEntryBuilder(key, get()).onChange(this::set).setTitle(title).setDescription(description).build();
+		return new ToggleGuiConfigEntryBuilder(key, get())
+				.onChange(this::set)
+				.setResetDelegate(() -> set(defaultValue))
+				.setTitle(title)
+				.setDescription(description)
+				.build();
 	}
 }
