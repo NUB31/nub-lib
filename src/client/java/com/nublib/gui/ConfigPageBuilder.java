@@ -22,12 +22,6 @@ public class ConfigPageBuilder {
 		return this;
 	}
 
-	public ConfigPageBuilder addConfigEntry(GuiConfigEntry configEntry, Runnable resetDelegate) {
-		configEntries.add(configEntry);
-
-		return this;
-	}
-
 	public ConfigPageBuilder addRange(String key, Integer defaultValue, Integer minValue, Integer maxValue, Consumer<RangeGuiConfigEntryBuilder> builderConsumer) {
 		RangeGuiConfigEntryBuilder builder = new RangeGuiConfigEntryBuilder(key, defaultValue, minValue, maxValue);
 		builderConsumer.accept(builder);
