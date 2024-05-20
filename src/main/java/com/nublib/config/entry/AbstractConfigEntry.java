@@ -42,6 +42,11 @@ public abstract class AbstractConfigEntry<T> implements IConfigEntry<T> {
 		storageProvider.save();
 	}
 
+	@Override
+	public void reset() {
+		set(defaultValue);
+	}
+
 	protected abstract String serialize(T value);
 
 	protected abstract T parse(String value);

@@ -4,18 +4,17 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
 
 import java.awt.*;
 import java.util.function.Consumer;
 
-public class ToggleWidget extends BaseCustomWidget {
+public class ToggleWidget extends AbstractCustomWidget {
 	private final Consumer<Boolean> onChange;
 	private final TextRenderer textRenderer;
 	private Boolean value;
 
-	public ToggleWidget(int x, int y, int width, Text message, Boolean defaultValue, Consumer<Boolean> onChange) {
-		super(x, y, width, 20, message);
+	public ToggleWidget(int x, int y, int width, Boolean defaultValue, Consumer<Boolean> onChange) {
+		super(x, y, width, 20);
 		this.value = defaultValue;
 		this.onChange = onChange;
 		this.textRenderer = MinecraftClient.getInstance().textRenderer;

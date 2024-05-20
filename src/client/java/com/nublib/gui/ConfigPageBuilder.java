@@ -1,10 +1,7 @@
 package com.nublib.gui;
 
 import com.nublib.config.entry.IClientConfigEntry;
-import com.nublib.gui.widget.entry.GuiConfigEntry;
-import com.nublib.gui.widget.entry.RangeGuiConfigEntryBuilder;
-import com.nublib.gui.widget.entry.StringGuiConfigEntryBuilder;
-import com.nublib.gui.widget.entry.ToggleGuiConfigEntryBuilder;
+import com.nublib.gui.widget.entry.*;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -25,6 +22,12 @@ public class ConfigPageBuilder {
 		return this;
 	}
 
+	public ConfigPageBuilder addConfigEntry(GuiConfigEntry configEntry, Runnable resetDelegate) {
+		configEntries.add(configEntry);
+
+		return this;
+	}
+
 	public ConfigPageBuilder addRange(String key, Integer defaultValue, Integer minValue, Integer maxValue, Consumer<RangeGuiConfigEntryBuilder> builderConsumer) {
 		RangeGuiConfigEntryBuilder builder = new RangeGuiConfigEntryBuilder(key, defaultValue, minValue, maxValue);
 		builderConsumer.accept(builder);
@@ -41,6 +44,13 @@ public class ConfigPageBuilder {
 
 	public ConfigPageBuilder addToggle(String key, Boolean defaultValue, Consumer<ToggleGuiConfigEntryBuilder> builderConsumer) {
 		ToggleGuiConfigEntryBuilder builder = new ToggleGuiConfigEntryBuilder(key, defaultValue);
+		builderConsumer.accept(builder);
+		addConfigEntry(builder.build());
+		return this;
+	}
+
+	public <T extends Enum<T>> ConfigPageBuilder addEnum(String key, T defaultValue, Class<T> enumClass, Consumer<EnumGuiConfigEntryBuilder<T>> builderConsumer) {
+		EnumGuiConfigEntryBuilder<T> builder = new EnumGuiConfigEntryBuilder<>(key, defaultValue, enumClass);
 		builderConsumer.accept(builder);
 		addConfigEntry(builder.build());
 		return this;

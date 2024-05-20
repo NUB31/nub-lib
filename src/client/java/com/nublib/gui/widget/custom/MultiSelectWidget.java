@@ -3,21 +3,20 @@ package com.nublib.gui.widget.custom;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class MultiSelectWidget<T extends Enum<T>> extends BaseCustomWidget {
+public class MultiSelectWidget<T extends Enum<T>> extends AbstractCustomWidget {
 	private final Consumer<T> onChange;
 	private final TextRenderer textRenderer;
 	private final List<T> values;
 	private T value;
 
-	public MultiSelectWidget(int x, int y, int width, Text message, T defaultValue, Consumer<T> onChange, Class<T> enumClass) {
-		super(x, y, width, 20, message);
+	public MultiSelectWidget(int x, int y, int width, T defaultValue, Consumer<T> onChange, Class<T> enumClass) {
+		super(x, y, width, 20);
 		this.value = defaultValue;
 		this.onChange = onChange;
 		this.textRenderer = MinecraftClient.getInstance().textRenderer;

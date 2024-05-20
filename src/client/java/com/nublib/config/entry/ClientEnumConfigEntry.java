@@ -19,7 +19,7 @@ public class ClientEnumConfigEntry<T extends Enum<T>> extends EnumConfigEntry<T>
 
 	@Override
 	public GuiConfigEntry guiConfigEntry() {
-		return new EnumGuiConfigEntryBuilder<>(key, defaultValue, clazz)
+		return new EnumGuiConfigEntryBuilder<>(key, get(), clazz)
 				.onChange(this::set)
 				.setTitle(title)
 				.setDescription(description)

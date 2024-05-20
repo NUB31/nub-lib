@@ -52,7 +52,8 @@ public class ConfigEntryWidget extends ElementListWidget.Entry<ConfigEntryWidget
 	@Override
 	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 		if (hovered) {
-			context.fill(x, y, x + entryWidth, y + entryHeight, ColorHelper.Argb.withAlpha(63, Colors.WHITE));
+			context.fill(x, y, x + entryWidth, y + entryHeight, ColorHelper.Argb.withAlpha(63, Colors.LIGHT_GRAY));
+			context.drawBorder(x, y, entryWidth, entryHeight, Colors.LIGHT_GRAY);
 		}
 
 		final int padding = 10;

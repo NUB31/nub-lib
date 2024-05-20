@@ -6,4 +6,6 @@ public interface IConfigEntry<T> {
 	void setAndSave(T value);
 
 	T get();
+
+	void reset();
 }

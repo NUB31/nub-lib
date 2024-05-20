@@ -7,9 +7,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.ColorHelper;
 
-public abstract class BaseCustomWidget extends ClickableWidget {
-	public BaseCustomWidget(int x, int y, int width, int height, Text message) {
-		super(x, y, width, height, message);
+public abstract class AbstractCustomWidget extends ClickableWidget {
+	public AbstractCustomWidget(int x, int y, int width, int height) {
+		super(x, y, width, height, Text.empty());
 	}
 
 	@Override
@@ -23,7 +23,8 @@ public abstract class BaseCustomWidget extends ClickableWidget {
 		int width = getWidth();
 		int height = getHeight();
 
-		context.fill(x, y, x + width, y + height, ColorHelper.Argb.withAlpha(63, Colors.WHITE));
+		int fillColorAlpha = isHovered() ? 63 : 31;
+		context.fill(x, y, x + width, y + height, ColorHelper.Argb.withAlpha(fillColorAlpha, Colors.WHITE));
 		int borderColor = isHovered() ? Colors.ALTERNATE_WHITE : Colors.LIGHT_GRAY;
 		context.drawBorder(x, y, width, height, borderColor);
 

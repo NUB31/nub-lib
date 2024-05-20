@@ -9,6 +9,8 @@ import net.minecraft.text.Text;
 public class ModMenu implements ModMenuApi {
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
-		return screen -> new ConfigScreenBuilder(screen).fromConfig(Text.literal("NubLib config"), NubLibClient.CONFIG).build();
+		return screen -> new ConfigScreenBuilder(screen)
+				.fromConfig(Text.literal("NubLib config"), NubLibClient.CONFIG)
+				.onSave(NubLibClient.CONFIG::save).build();
 	}
 }
