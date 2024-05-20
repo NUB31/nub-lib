@@ -1,1 +1,1 @@
-Update to minecraft version 1.20.6
+Update config generator to work better with 1.20.6

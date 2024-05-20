@@ -11,6 +11,7 @@ import net.minecraft.client.gui.widget.MultilineTextWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +68,7 @@ public class ConfigEntryWidget extends ElementListWidget.Entry<ConfigEntryWidget
 		description.setMaxRows(descriptionHeight / MinecraftClient.getInstance().textRenderer.fontHeight);
 		description.setY(y + label.getHeight() + 10);
 		description.setX(x);
+		description.setTextColor(Color.LIGHT_GRAY.getRGB());
 		description.render(context, mouseX, mouseY, tickDelta);
 	}
 }

@@ -21,7 +21,7 @@ public class EnumGuiConfigEntryBuilder<T extends Enum<T>> extends AbstractGuiCon
 		List<T> values = Arrays.asList(enumClass.getEnumConstants());
 
 		ButtonWidget widget = ButtonWidget
-				.builder(Text.translatable("options.generic_value", key, currentValue.name()), button -> {
+				.builder(Text.literal(currentValue.name()), button -> {
 					int index = values.indexOf(currentValue);
 
 					if (index == -1 || index >= values.size() - 1) {

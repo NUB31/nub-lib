@@ -14,20 +14,18 @@ import java.util.function.Consumer;
 public class ConfigScreenBuilder {
 	private final Screen parent;
 	private final List<ConfigPage> configPages;
-	private final String modId;
 	private Runnable onSave;
 	private Runnable onCancel;
-	private Text title;
+	private Boolean hasCancelButton;
 
-	public ConfigScreenBuilder(Screen parent, String modId) {
+	public ConfigScreenBuilder(Screen parent) {
 		this.parent = parent;
 		this.onSave = () -> {
 		};
 		this.onCancel = () -> {
 		};
 		this.configPages = new ArrayList<>();
-		this.title = Text.literal(String.format("Mod options for %s", modId));
-		this.modId = modId;
+		this.hasCancelButton = false;
 	}
 
 	public ConfigScreenBuilder onSave(Runnable delegate) {
@@ -36,12 +34,8 @@ public class ConfigScreenBuilder {
 	}
 
 	public ConfigScreenBuilder onCancel(Runnable delegate) {
+		hasCancelButton = true;
 		onCancel = delegate;
-		return this;
-	}
-
-	public ConfigScreenBuilder setTitle(Text title) {
-		this.title = title;
 		return this;
 	}
 
@@ -67,6 +61,6 @@ public class ConfigScreenBuilder {
 	}
 
 	public ConfigScreen build() {
-		return new ConfigScreen(parent, title, onSave, onCancel, configPages);
+		return new ConfigScreen(parent, onSave, onCancel, configPages, hasCancelButton);
 	}
 }
