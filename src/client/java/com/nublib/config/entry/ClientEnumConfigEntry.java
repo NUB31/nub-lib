@@ -21,7 +21,6 @@ public class ClientEnumConfigEntry<T extends Enum<T>> extends EnumConfigEntry<T>
 	public GuiConfigEntry guiConfigEntry() {
 		return new EnumGuiConfigEntryBuilder<>(key, get(), clazz)
 				.onChange(this::set)
-				.setResetDelegate(() -> set(defaultValue))
 				.setTitle(title)
 				.setDescription(description)
 				.build();

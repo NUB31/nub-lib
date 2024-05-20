@@ -23,7 +23,6 @@ public class ClientRangeConfigEntry extends IntegerConfigEntry implements IClien
 	public GuiConfigEntry guiConfigEntry() {
 		return new RangeGuiConfigEntryBuilder(key, get(), minValue, maxValue)
 				.onChange(this::set)
-				.setResetDelegate(() -> set(defaultValue))
 				.setTitle(title)
 				.setDescription(description)
 				.build();
