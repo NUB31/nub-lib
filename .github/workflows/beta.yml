@@ -39,7 +39,7 @@ jobs:
                   modrinth-id: ${{vars.MODRINTH_ID}}
                   modrinth-token: ${{secrets.MODRINTH_TOKEN}}
                 
-                  name: "(BETA) ${{vars.MOD_NAME}} ${{github.ref_name}}-${{vars.MINECRAFT_VERSION}}"
+                  name: "(BETA) ${{vars.MOD_NAME}} ${{github.ref_name}}"
                   version-type: beta
                   changelog-file: CHANGELOG.md
                   java: ${{vars.JAVA_VERSION}}
