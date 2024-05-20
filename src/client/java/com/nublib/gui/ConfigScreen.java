@@ -71,7 +71,7 @@ public class ConfigScreen extends GameOptionsScreen {
 
 	@Override
 	protected void init() {
-		configEntryListWidget = new ConfigEntryList(MinecraftClient.getInstance(), layout.getWidth(), layout.getContentHeight(), 0, 100);
+		configEntryListWidget = new ConfigEntryList(MinecraftClient.getInstance(), layout.getWidth(), layout.getContentHeight(), 0, 60);
 		layout.addBody(configEntryListWidget);
 
 		if (!configPages.isEmpty()) {

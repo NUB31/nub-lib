@@ -7,11 +7,11 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.gui.widget.MultilineTextWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
+import net.minecraft.util.math.ColorHelper;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +20,8 @@ public class ConfigEntryWidget extends ElementListWidget.Entry<ConfigEntryWidget
 	private final List<ClickableWidget> children = new ArrayList<>();
 
 	private final TextWidget label;
-	private final MultilineTextWidget description;
 	private final ClickableWidget control;
+	private final Text description;
 
 	public ConfigEntryWidget(GuiConfigEntry configEntry) {
 		Text title;
@@ -33,11 +33,10 @@ public class ConfigEntryWidget extends ElementListWidget.Entry<ConfigEntryWidget
 
 		this.control = configEntry.widget();
 		this.label = new TextWidget(title, MinecraftClient.getInstance().textRenderer);
-		this.description = new MultilineTextWidget(configEntry.description(), MinecraftClient.getInstance().textRenderer);
+		this.description = configEntry.description();
 
 		children.add(this.control);
 		children.add(this.label);
-		children.add(this.description);
 	}
 
 	@Override
@@ -52,23 +51,24 @@ public class ConfigEntryWidget extends ElementListWidget.Entry<ConfigEntryWidget
 
 	@Override
 	public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		label.setWidth(entryWidth);
-		label.setY(y);
-		label.setX(x);
+		if (hovered) {
+			context.fill(x, y, x + entryWidth, y + entryHeight, ColorHelper.Argb.withAlpha(63, Colors.WHITE));
+		}
+
+		final int padding = 10;
+
+		label.setWidth(entryWidth - (padding * 2));
+		label.setY(y + padding);
+		label.setX(x + padding);
 		label.render(context, mouseX, mouseY, tickDelta);
 
-		control.setWidth(entryWidth);
-		control.setY(y + entryHeight - control.getHeight() - 10);
-		control.setX(x);
+		control.setWidth(entryWidth - (padding * 2));
+		control.setY(y + entryHeight - control.getHeight() - padding);
+		control.setX(x + padding);
 		control.render(context, mouseX, mouseY, tickDelta);
 
-		int descriptionHeight = entryHeight - label.getHeight() - control.getHeight() - 25;
-
-		description.setMaxWidth(entryWidth);
-		description.setMaxRows(descriptionHeight / MinecraftClient.getInstance().textRenderer.fontHeight);
-		description.setY(y + label.getHeight() + 10);
-		description.setX(x);
-		description.setTextColor(Color.LIGHT_GRAY.getRGB());
-		description.render(context, mouseX, mouseY, tickDelta);
+		if (hovered) {
+			context.drawTooltip(MinecraftClient.getInstance().textRenderer, description, mouseX, mouseY);
+		}
 	}
 }
