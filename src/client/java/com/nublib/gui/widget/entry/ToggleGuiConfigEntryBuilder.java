@@ -1,6 +1,6 @@
 package com.nublib.gui.widget.entry;
 
-Config pagesRemoveConfig pagesRemoveConfig pagesRemoveimport net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.screen.ScreenTexts;
 
 public class ToggleGuiConfigEntryBuilder extends AbstractGuiConfigEntryBuilder<Boolean> {
