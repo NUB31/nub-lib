@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
 
-public class Utils {
+public class BindingUtil {
     public static void bindScreenToKey(int defaultKey, Screen screen, String translationKey, String category) {
         KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(translationKey, defaultKey, category));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
