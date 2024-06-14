@@ -44,8 +44,10 @@ public class ExampleConfig extends Config {
 
 ### Creating the configuration instance
 
-Create a static instance of an `IStorageProvider` and the configuration class
+Create a static instance of an `IStorageProvider` and the configuration class.
+
 Storage providers are responsible for saving your configuration somewhere.
+
 You can use one of the included ones below or create your own implementation of `IStorageProvider`:
 
 - `FileStorageProvider`
@@ -89,7 +91,8 @@ class, a couple changes is required
 
 ### Change the configuration entry implementation
 
-Change your configuration class to use an implementation of `IClientConfigEntry` instead of `IConfigEntry`
+Change your configuration class to use an implementation of `IClientConfigEntry` instead of `IConfigEntry`.
+
 All included config entries has a version that implements the `IClientConfigEntry` interface. All of these takes title
 and description arguments in addition to the standard ones.
 
