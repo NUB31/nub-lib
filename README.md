@@ -178,7 +178,7 @@ public class ModMenu implements ModMenuApi {
         return screen -> ConfigScreen()
                 .builder()
                 .setParent(screen)
-                .fromConfig(Text.literal("nub-lib Options"), NubQolClient.CONFIG)
+                .fromConfig(Text.translatable("nub-lib.config.ui.title"), NubLibClient.CONFIG)
                 .onSave(NubLibClient.CONFIG::save)
                 .build();
     }
