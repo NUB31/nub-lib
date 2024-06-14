@@ -1,1 +1,1 @@
-* Version bump to rebuild jar
+* Update to Minecraft version 1.21
