@@ -1,3 +1,11 @@
 {
-  "nub-lib.name": "nub-lib"
+  "nub-lib.name": "Nub Lib",
+  "nub-lib.config.ui.title": "Nub Lib Settings",
+  "nub-lib.config.feature1.enabled.title": "Feature 1 enabled",
+  "nub-lib.config.feature1.enabled.description": "Determines if feature 1 is enabled",
+  "nub-lib.config.feature1.name.title": "Feature 1 name",
+  "nub-lib.config.feature1.name.description": "Determines the name of feature 1",
+  "nub-lib.config.ui.key.show_example_config_screen_1": "Show example first config screen",
+  "nub-lib.config.ui.key.show_example_config_screen_2": "Show example second config screen",
+  "nub-lib.config.ui.key.show_example_config_screen_3": "Show example third config screen"
 }

@@ -3,13 +3,15 @@ package com.nublib.config;
 import com.nublib.config.provider.IStorageProvider;
 
 public abstract class Config {
-	protected IStorageProvider storageProvider;
+    @Deprecated(forRemoval = true)
+    protected IStorageProvider storageProvider;
+    protected IStorageProvider sp;
 
-	public Config(IStorageProvider storageProvider) {
-		this.storageProvider = storageProvider;
-	}
+    public Config(IStorageProvider storageProvider) {
+        this.sp = storageProvider;
+    }
 
-	public void save() {
-		storageProvider.save();
-	}
+    public void save() {
+        sp.save();
+    }
 }

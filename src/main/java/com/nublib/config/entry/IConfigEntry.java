@@ -1,11 +1,11 @@
 package com.nublib.config.entry;
 
 public interface IConfigEntry<T> {
-	void set(T value);
+    void set(T value);
 
-	void setAndSave(T value);
+    void setAndSave(T value);
 
-	T get();
+    T get();
 
-	void reset();
+    void reset();
 }

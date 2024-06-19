@@ -6,24 +6,24 @@ import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
 public class RangeGuiConfigEntryBuilder extends AbstractGuiConfigEntryBuilder<Integer> {
-	private final Integer minValue;
-	private final Integer maxValue;
+    private final Integer minValue;
+    private final Integer maxValue;
 
-	public RangeGuiConfigEntryBuilder(String key, Integer defaultValue, Integer minValue, Integer maxValue) {
-		super(key, defaultValue);
-		this.minValue = minValue;
-		this.maxValue = maxValue;
-	}
+    public RangeGuiConfigEntryBuilder(Integer defaultValue, Integer minValue, Integer maxValue) {
+        super(defaultValue);
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+    }
 
-	@Override
-	public ClickableWidget createWidget() {
-		return new SimpleOption<>(
-				key,
-				SimpleOption.emptyTooltip(),
-				((optionText, value) -> Text.translatable("options.generic_value", optionText, value)),
-				new SimpleOption.ValidatingIntSliderCallbacks(minValue, maxValue, true),
-				defaultValue,
-				onChange
-		).createWidget(MinecraftClient.getInstance().options);
-	}
+    @Override
+    public ClickableWidget createWidget() {
+        return new SimpleOption<>(
+                "",
+                SimpleOption.emptyTooltip(),
+                ((optionText, value) -> Text.translatable("options.generic_value", optionText, value)),
+                new SimpleOption.ValidatingIntSliderCallbacks(minValue, maxValue, true),
+                defaultValue,
+                onChange
+        ).createWidget(MinecraftClient.getInstance().options);
+    }
 }

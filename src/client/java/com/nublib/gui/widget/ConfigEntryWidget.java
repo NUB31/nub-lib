@@ -25,15 +25,10 @@ public class ConfigEntryWidget extends ElementListWidget.Entry<ConfigEntryWidget
     private final Text description;
 
     public ConfigEntryWidget(GuiConfigEntry configEntry) {
-        Text title;
-        if (configEntry.title().getString().isEmpty()) {
-            title = configEntry.widget().getMessage();
-        } else {
-            title = configEntry.title();
-        }
+        Text title = configEntry.title();
 
         this.description = configEntry.description();
-        this.control = configEntry.widget();
+        this.control = configEntry.widget().get();
         this.label = new TextWidget(title, MinecraftClient.getInstance().textRenderer);
 
         children.add(this.control);
