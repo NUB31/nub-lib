@@ -54,7 +54,9 @@ public class ConfigScreenBuilder {
             Arrays.stream(config.getClass().getDeclaredFields()).toList().forEach(field -> {
                 try {
                     IClientConfigEntry<?> instance = (IClientConfigEntry<?>) field.get(config);
-                    builder.fromConfigEntry(instance);
+                    builder.addEntries(entryListBuilder -> {
+                        entryListBuilder.fromConfigEntry(instance);
+                    });
                 } catch (Exception e) {
                     NubLib.LOGGER.info(e.getMessage());
                 }
