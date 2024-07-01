@@ -35,12 +35,12 @@ public class EntryListWidget extends ContainerWidget {
     private Entry constructEntry(GuiConfigEntry entry) {
         Entry converted = new Entry(entry, entry.widget().get());
         if (!entry.children().isEmpty()) {
-            converted.buttonWidget = Optional.of(ButtonWidget.builder(Text.literal("↓"), b -> {
+            converted.buttonWidget = Optional.of(ButtonWidget.builder(Text.literal("↑"), b -> {
                 converted.collapsed = Optional.of(!converted.collapsed.orElse(true));
                 if (converted.collapsed.get()) {
-                    b.setMessage(Text.literal("↓"));
-                } else {
                     b.setMessage(Text.literal("↑"));
+                } else {
+                    b.setMessage(Text.literal("↓"));
                 }
             }).build());
             converted.collapsed = Optional.of(true);
