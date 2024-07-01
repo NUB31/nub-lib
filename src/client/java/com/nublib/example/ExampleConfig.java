@@ -1,5 +1,6 @@
 package com.nublib.example;
 
+import com.nublib.NubLib;
 import com.nublib.config.Config;
 import com.nublib.config.entry.ClientStringConfigEntry;
 import com.nublib.config.entry.ClientToggleConfigEntry;
@@ -59,58 +60,13 @@ public class ExampleConfig extends Config {
      * The code below will create the equivalent config screen as the `createScreenFromConfig`
      */
     public Screen createCustomScreen(@Nullable Screen parent) {
+        NubLib.LOGGER.info("UWU");
         return ConfigScreen
                 .builder()
                 .setParent(parent)
                 .onSave(this::save)
                 .addPage(Text.translatable("nub-lib.config.ui.title"), page -> {
                     page.addEntries(entryListBuilder -> {
-                        entryListBuilder.addToggle(feature1Enabled.get(), toggleGuiConfigEntryBuilder -> {
-                            toggleGuiConfigEntryBuilder
-                                    .setTitle(feature1Enabled.guiConfigEntry().title())
-                                    .setDescription(feature1Enabled.guiConfigEntry().description())
-                                    .onChange(feature1Enabled::set)
-                                    .addChildEntries(entryListBuilder1 -> {
-                                        entryListBuilder1.addString(feature1Name.get(), stringGuiConfigEntryBuilder -> {
-                                            stringGuiConfigEntryBuilder
-                                                    .setTitle(feature1Name.guiConfigEntry().title())
-                                                    .setDescription(feature1Name.guiConfigEntry().description())
-                                                    .onChange(feature1Name::set);
-                                        });
-                                        entryListBuilder1.addString(feature1Name.get(), stringGuiConfigEntryBuilder -> {
-                                            stringGuiConfigEntryBuilder
-                                                    .setTitle(feature1Name.guiConfigEntry().title())
-                                                    .setDescription(feature1Name.guiConfigEntry().description())
-                                                    .onChange(feature1Name::set)
-                                                    .addChildEntries(entryListBuilder2 -> {
-                                                        entryListBuilder2.addString(feature1Name.get(), stringGuiConfigEntryBuilder1 -> {
-                                                            stringGuiConfigEntryBuilder1
-                                                                    .setTitle(feature1Name.guiConfigEntry().title())
-                                                                    .setDescription(feature1Name.guiConfigEntry().description())
-                                                                    .onChange(feature1Name::set);
-                                                        });
-                                                        entryListBuilder2.addString(feature1Name.get(), stringGuiConfigEntryBuilder1 -> {
-                                                            stringGuiConfigEntryBuilder1
-                                                                    .setTitle(feature1Name.guiConfigEntry().title())
-                                                                    .setDescription(feature1Name.guiConfigEntry().description())
-                                                                    .onChange(feature1Name::set);
-                                                        });
-                                                        entryListBuilder2.addString(feature1Name.get(), stringGuiConfigEntryBuilder1 -> {
-                                                            stringGuiConfigEntryBuilder1
-                                                                    .setTitle(feature1Name.guiConfigEntry().title())
-                                                                    .setDescription(feature1Name.guiConfigEntry().description())
-                                                                    .onChange(feature1Name::set);
-                                                        });
-                                                        entryListBuilder2.addString(feature1Name.get(), stringGuiConfigEntryBuilder1 -> {
-                                                            stringGuiConfigEntryBuilder1
-                                                                    .setTitle(feature1Name.guiConfigEntry().title())
-                                                                    .setDescription(feature1Name.guiConfigEntry().description())
-                                                                    .onChange(feature1Name::set);
-                                                        });
-                                                    });
-                                        });
-                                    });
-                        });
                         entryListBuilder.addToggle(feature1Enabled.get(), toggleGuiConfigEntryBuilder -> {
                             toggleGuiConfigEntryBuilder
                                     .setTitle(feature1Enabled.guiConfigEntry().title())

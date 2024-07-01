@@ -10,6 +10,7 @@ public record GuiConfigEntry(
         Text title,
         Text description,
         Supplier<ClickableWidget> widget,
-        List<GuiConfigEntry> children
+        List<GuiConfigEntry> children,
+        Supplier<Boolean> hasChanged
 ) {
 }

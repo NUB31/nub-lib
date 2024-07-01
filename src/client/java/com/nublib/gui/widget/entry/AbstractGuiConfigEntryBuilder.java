@@ -14,14 +14,14 @@ public abstract class AbstractGuiConfigEntryBuilder<T> {
     protected Consumer<T> onChange;
     protected T defaultValue;
     protected List<GuiConfigEntry> configEntries;
+    private Boolean hasChanged = false;
 
     public AbstractGuiConfigEntryBuilder(T defaultValue) {
         this.title = Text.empty();
         this.description = Text.empty();
         this.defaultValue = defaultValue;
         this.configEntries = new ArrayList<>();
-        this.onChange = v -> {
-        };
+        this.onChange = (v) -> this.hasChanged = !v.equals(defaultValue);
     }
 
     public AbstractGuiConfigEntryBuilder<T> setTitle(Text title) {
@@ -35,7 +35,10 @@ public abstract class AbstractGuiConfigEntryBuilder<T> {
     }
 
     public AbstractGuiConfigEntryBuilder<T> onChange(Consumer<T> delegate) {
-        onChange = delegate;
+        onChange = (v) -> {
+            this.hasChanged = !v.equals(defaultValue);
+            delegate.accept(v);
+        };
         return this;
     }
 
@@ -49,6 +52,6 @@ public abstract class AbstractGuiConfigEntryBuilder<T> {
     public abstract ClickableWidget createWidget();
 
     public GuiConfigEntry build() {
-        return new GuiConfigEntry(title, description, this::createWidget, configEntries);
+        return new GuiConfigEntry(title, description, this::createWidget, configEntries, () -> hasChanged);
     }
 }

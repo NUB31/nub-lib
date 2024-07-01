@@ -28,6 +28,7 @@ public class EntryListWidget extends ContainerWidget {
 
     public void setConfigEntries(List<GuiConfigEntry> entries) {
         children.clear();
+        topLevelEntries.clear();
         childEntryMap.clear();
         for (GuiConfigEntry entry : entries) {
             ClickableWidget widget = entry.widget().get();
@@ -69,8 +70,13 @@ public class EntryListWidget extends ContainerWidget {
         widget.render(context, mouseX, mouseY, delta);
         height += widget.getHeight() + 10;
 
-        context.fill(x, y, x + 3, y + height, ColorHelper.Argb.withAlpha(61, Colors.ALTERNATE_WHITE));
-        context.fill(getX(), y, x, y + height, ColorHelper.Argb.withAlpha(30, Colors.ALTERNATE_WHITE));
+        int color = Colors.ALTERNATE_WHITE;
+        if (entry.hasChanged().get()) {
+            color = Colors.GREEN;
+        }
+
+        context.fill(x, y, x + 3, y + height, ColorHelper.Argb.withAlpha(61, color));
+        context.fill(getX(), y, x, y + height, ColorHelper.Argb.withAlpha(30, color));
 
         for (GuiConfigEntry child : entry.children()) {
             height += renderEntry(context, child, x + 20, y + height, width - 20, mouseX, mouseY, delta);

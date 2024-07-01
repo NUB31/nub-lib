@@ -8,16 +8,16 @@ import net.minecraft.client.option.KeyBinding;
 import java.util.function.Supplier;
 
 public class BindingUtil {
-    public static void bindScreenToKey(int defaultKey, Screen screen, String translationKey, String category) {
+    public static void bindScreenToKey(int defaultKey, Supplier<Screen> screenSupplier, String translationKey, String category) {
         KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(translationKey, defaultKey, category));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyBinding.wasPressed()) {
-                client.setScreen(screen);
+                client.setScreen(screenSupplier.get());
             }
         });
     }
 
     public static void bindScreenToKey(int defaultKey, Supplier<Screen> screenSupplier, String translationKey) {
-        bindScreenToKey(defaultKey, screenSupplier.get(), translationKey, "nub-lib.name");
+        bindScreenToKey(defaultKey, screenSupplier, translationKey, "nub-lib.name");
     }
 }
