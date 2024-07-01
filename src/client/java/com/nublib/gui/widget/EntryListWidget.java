@@ -1,6 +1,7 @@
 package com.nublib.gui.widget;
 
 import com.nublib.gui.widget.entry.GuiConfigEntry;
+import com.nublib.util.TooltipUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -68,7 +69,15 @@ public class EntryListWidget extends ContainerWidget {
         ClickableWidget widget = childEntryMap.get(entry);
         widget.setDimensionsAndPosition(width - 10, 20, x + 13, y + height);
         widget.render(context, mouseX, mouseY, delta);
-        height += widget.getHeight() + 10;
+
+        height += widget.getHeight();
+
+        boolean hovered = context.scissorContains(mouseX, mouseY) && mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+        if (hovered && !entry.description().getString().isEmpty()) {
+            context.drawTooltip(MinecraftClient.getInstance().textRenderer, TooltipUtil.wrapText(entry.description(), 300), mouseX, mouseY);
+        }
+
+        height += 10;
 
         int color = Colors.ALTERNATE_WHITE;
         if (entry.hasChanged().get()) {
