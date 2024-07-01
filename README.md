@@ -159,7 +159,7 @@ public void onInitializeClient() {
             .onSave(CONFIG::save)
             .build();
 
-    Utils.bindScreenToKey(GLFW.GLFW_KEY_N, configScreen, "nub-lib.ui.open_config_page");
+    BindingUtil.bindScreenToKey(GLFW.GLFW_KEY_N, configScreen, "nub-lib.ui.open_config_page");
 }
 ```
 
