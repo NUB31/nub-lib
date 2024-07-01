@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public class ExampleConfig extends Config {
 
     public final IClientConfigEntry<Boolean> feature1Enabled = new ClientToggleConfigEntry(sp, "feature1.enabled", true, Text.translatable("nub-lib.config.feature1.enabled.title"), Text.translatable("nub-lib.config.feature1.enabled.description"));
-    public final IClientConfigEntry<String> feature1Name = new ClientStringConfigEntry(sp, "feature1.enabled", "Feature 1", Text.translatable("nub-lib.config.feature1.name.title"), Text.translatable("nub-lib.config.feature1.name.description"));
+    public final IClientConfigEntry<String> feature1Name = new ClientStringConfigEntry(sp, "feature1.name", "Feature 1", Text.translatable("nub-lib.config.feature1.name.title"), Text.translatable("nub-lib.config.feature1.name.description"));
 
     public ExampleConfig(IStorageProvider storageProvider) {
         super(storageProvider);
@@ -69,11 +69,59 @@ public class ExampleConfig extends Config {
                             toggleGuiConfigEntryBuilder
                                     .setTitle(feature1Enabled.guiConfigEntry().title())
                                     .setDescription(feature1Enabled.guiConfigEntry().description())
+                                    .onChange(feature1Enabled::set)
                                     .addChildEntries(entryListBuilder1 -> {
                                         entryListBuilder1.addString(feature1Name.get(), stringGuiConfigEntryBuilder -> {
                                             stringGuiConfigEntryBuilder
                                                     .setTitle(feature1Name.guiConfigEntry().title())
-                                                    .setDescription(feature1Name.guiConfigEntry().description());
+                                                    .setDescription(feature1Name.guiConfigEntry().description())
+                                                    .onChange(feature1Name::set);
+                                        });
+                                        entryListBuilder1.addString(feature1Name.get(), stringGuiConfigEntryBuilder -> {
+                                            stringGuiConfigEntryBuilder
+                                                    .setTitle(feature1Name.guiConfigEntry().title())
+                                                    .setDescription(feature1Name.guiConfigEntry().description())
+                                                    .onChange(feature1Name::set)
+                                                    .addChildEntries(entryListBuilder2 -> {
+                                                        entryListBuilder2.addString(feature1Name.get(), stringGuiConfigEntryBuilder1 -> {
+                                                            stringGuiConfigEntryBuilder1
+                                                                    .setTitle(feature1Name.guiConfigEntry().title())
+                                                                    .setDescription(feature1Name.guiConfigEntry().description())
+                                                                    .onChange(feature1Name::set);
+                                                        });
+                                                        entryListBuilder2.addString(feature1Name.get(), stringGuiConfigEntryBuilder1 -> {
+                                                            stringGuiConfigEntryBuilder1
+                                                                    .setTitle(feature1Name.guiConfigEntry().title())
+                                                                    .setDescription(feature1Name.guiConfigEntry().description())
+                                                                    .onChange(feature1Name::set);
+                                                        });
+                                                        entryListBuilder2.addString(feature1Name.get(), stringGuiConfigEntryBuilder1 -> {
+                                                            stringGuiConfigEntryBuilder1
+                                                                    .setTitle(feature1Name.guiConfigEntry().title())
+                                                                    .setDescription(feature1Name.guiConfigEntry().description())
+                                                                    .onChange(feature1Name::set);
+                                                        });
+                                                        entryListBuilder2.addString(feature1Name.get(), stringGuiConfigEntryBuilder1 -> {
+                                                            stringGuiConfigEntryBuilder1
+                                                                    .setTitle(feature1Name.guiConfigEntry().title())
+                                                                    .setDescription(feature1Name.guiConfigEntry().description())
+                                                                    .onChange(feature1Name::set);
+                                                        });
+                                                    });
+                                        });
+                                    });
+                        });
+                        entryListBuilder.addToggle(feature1Enabled.get(), toggleGuiConfigEntryBuilder -> {
+                            toggleGuiConfigEntryBuilder
+                                    .setTitle(feature1Enabled.guiConfigEntry().title())
+                                    .setDescription(feature1Enabled.guiConfigEntry().description())
+                                    .onChange(feature1Enabled::set)
+                                    .addChildEntries(entryListBuilder1 -> {
+                                        entryListBuilder1.addString(feature1Name.get(), stringGuiConfigEntryBuilder -> {
+                                            stringGuiConfigEntryBuilder
+                                                    .setTitle(feature1Name.guiConfigEntry().title())
+                                                    .setDescription(feature1Name.guiConfigEntry().description())
+                                                    .onChange(feature1Name::set);
                                         });
                                     });
                         });

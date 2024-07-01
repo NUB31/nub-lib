@@ -1,8 +1,6 @@
 package com.nublib.gui;
 
-import com.nublib.gui.widget.ConfigEntryList;
-import com.nublib.gui.widget.ConfigEntryWidget;
-import net.minecraft.client.MinecraftClient;
+import com.nublib.gui.widget.EntryListWidget;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -27,8 +25,7 @@ public class ConfigScreen extends Screen {
     private final Screen parent;
     @Nullable
     private ConfigPage selectedConfigPage;
-    @Nullable
-    private ConfigEntryList configEntryListWidget;
+    private EntryListWidget entryListWidget;
 
     public ConfigScreen(Runnable onSave, @Nullable Runnable onCancel, List<ConfigPage> configPages, @Nullable Screen parent) {
         super(Text.literal("Options"));
@@ -46,9 +43,8 @@ public class ConfigScreen extends Screen {
     private void refreshPage(ConfigPage page) {
         selectedConfigPage = page;
 
-        if (selectedConfigPage != null && configEntryListWidget != null) {
-            configEntryListWidget.children().clear();
-            selectedConfigPage.configEntries().forEach(entry -> configEntryListWidget.children().add(new ConfigEntryWidget(entry)));
+        if (selectedConfigPage != null && entryListWidget != null) {
+            entryListWidget.setConfigEntries(selectedConfigPage.configEntries());
         }
     }
 
@@ -74,8 +70,8 @@ public class ConfigScreen extends Screen {
     }
 
     private void initBody() {
-        configEntryListWidget = new ConfigEntryList(MinecraftClient.getInstance(), layout.getWidth(), layout.getContentHeight(), 0, 60);
-        layout.addBody(configEntryListWidget);
+        entryListWidget = new EntryListWidget(0, layout.getHeaderHeight(), layout.getWidth(), layout.getHeight() - layout.getHeaderHeight() - layout.getFooterHeight());
+        layout.addBody(entryListWidget);
 
         if (!configPages.isEmpty()) {
             refreshPage(configPages.getFirst());
@@ -84,10 +80,8 @@ public class ConfigScreen extends Screen {
 
     protected void initTabNavigation() {
         layout.refreshPositions();
-
-        if (configEntryListWidget != null) {
-            configEntryListWidget.position(width, layout);
-        }
+        entryListWidget.setPosition(0, layout.getHeaderHeight());
+        entryListWidget.setDimensions(layout.getWidth(), layout.getHeight() - layout.getHeaderHeight() - layout.getFooterHeight());
     }
 
     @Override
@@ -103,12 +97,7 @@ public class ConfigScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         tabButtons.forEach((k, v) -> v.active = selectedConfigPage != k);
-
-        if (configEntryListWidget != null) {
-            configEntryListWidget.setWidth(layout.getWidth());
-            configEntryListWidget.setHeight(layout.getContentHeight());
-        }
-
+        entryListWidget.render(context, mouseX, mouseY, delta);
         super.render(context, mouseX, mouseY, delta);
     }
 
