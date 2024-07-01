@@ -1,15 +1,23 @@
 package com.nublib.gui.widget.entry;
 
-import com.nublib.gui.widget.custom.ToggleWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.screen.ScreenTexts;
 
 public class ToggleGuiConfigEntryBuilder extends AbstractGuiConfigEntryBuilder<Boolean> {
+    private Boolean value;
+
     public ToggleGuiConfigEntryBuilder(Boolean defaultValue) {
         super(defaultValue);
+        value = defaultValue;
     }
 
     @Override
     public ClickableWidget createWidget() {
-        return new ToggleWidget(0, 0, 0, defaultValue, onChange);
+        return ButtonWidget.builder(ScreenTexts.onOrOff(value), (b) -> {
+            value = !value;
+            onChange.accept(value);
+            b.setMessage(ScreenTexts.onOrOff(value));
+        }).build();
     }
 }

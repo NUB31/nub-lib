@@ -40,6 +40,13 @@ public class EntryListBuilder {
         return this;
     }
 
+    public EntryListBuilder addContainer(Consumer<ContainerGuiConfigEntryBuilder> builderConsumer) {
+        ContainerGuiConfigEntryBuilder builder = new ContainerGuiConfigEntryBuilder();
+        builderConsumer.accept(builder);
+        addConfigEntry(builder.build());
+        return this;
+    }
+
     public <T extends Enum<T>> EntryListBuilder addEnum(T defaultValue, Class<T> enumClass, Consumer<EnumGuiConfigEntryBuilder<T>> builderConsumer) {
         EnumGuiConfigEntryBuilder<T> builder = new EnumGuiConfigEntryBuilder<>(defaultValue, enumClass);
         builderConsumer.accept(builder);

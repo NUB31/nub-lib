@@ -11,8 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ExampleMixin {
     @Inject(at = @At("HEAD"), method = "run")
     private void init(CallbackInfo info) {
-        if (ExampleModClient.CONFIG.feature1Enabled.get()) {
-            NubLib.LOGGER.info(ExampleModClient.CONFIG.feature1Name.get());
+        if (ExampleModClient.CONFIG.feature2Enabled.get()) {
+            NubLib.LOGGER.info(ExampleModClient.CONFIG.feature2Name.get());
+            NubLib.LOGGER.info(ExampleModClient.CONFIG.feature2Value.get().toString());
         }
     }
 }
