@@ -58,6 +58,7 @@ public class ExampleConfig extends Config {
      * Creates a screen that works with any config.
      * Per config entry, you need at least a title, but a onChange handler is needed for real world usage.
      * The code below will create the equivalent config screen as the `createScreenFromConfig`
+     * except for nesting feature1 name under feature1 enabled
      */
     public Screen createCustomScreen(@Nullable Screen parent) {
         NubLib.LOGGER.info("UWU");
