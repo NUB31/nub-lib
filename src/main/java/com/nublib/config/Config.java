@@ -9,6 +9,7 @@ public abstract class Config {
 
     public Config(IStorageProvider storageProvider) {
         this.sp = storageProvider;
+        this.storageProvider = sp;
     }
 
     public void save() {
