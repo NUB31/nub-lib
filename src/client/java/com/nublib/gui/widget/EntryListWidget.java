@@ -3,12 +3,12 @@ package com.nublib.gui.widget;
 import com.nublib.gui.widget.entry.GuiConfigEntry;
 import com.nublib.util.TooltipUtil;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ContainerWidget;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.ColorHelper;
@@ -19,9 +19,54 @@ import java.util.Optional;
 
 public class EntryListWidget extends ContainerWidget {
     private final List<Entry> entries = new ArrayList<>();
+    private double scrollOffset = 0;
+    private int contentHeight = 0;
+    private boolean isScrolling = false;
+    private double lastMouseY = 0;
 
     public EntryListWidget(int x, int y, int width, int height) {
         super(x, y, width, height, Text.literal("Entry list"));
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        scrollOffset = Math.clamp(scrollOffset + (verticalAmount * 10), Math.min(-(contentHeight - getHeight()), 0), 0);
+        return true;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (isMouseOverScrollbar(mouseX, mouseY)) {
+            isScrolling = true;
+            lastMouseY = mouseY;
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (isScrolling) {
+            isScrolling = false;
+            return true;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (isScrolling) {
+            double delta = mouseY - lastMouseY;
+            scrollOffset = Math.clamp(scrollOffset - delta * (contentHeight / (double) getHeight()), Math.min(-(contentHeight - getHeight()), 0), 0);
+            lastMouseY = mouseY;
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    private boolean isMouseOverScrollbar(double mouseX, double mouseY) {
+        int scrollbarX = getX() + getWidth() - 6;
+        return mouseX >= scrollbarX && mouseX < scrollbarX + 6 && mouseY >= getY() && mouseY < getY() + getHeight();
     }
 
     public void setConfigEntries(List<GuiConfigEntry> entries) {
@@ -30,10 +75,15 @@ public class EntryListWidget extends ContainerWidget {
         for (GuiConfigEntry entry : entries) {
             this.entries.add(constructEntry(entry));
         }
+
+        scrollOffset = 0;
     }
 
     private Entry constructEntry(GuiConfigEntry entry) {
-        Entry converted = new Entry(entry, entry.widget().get());
+        TextWidget textWidget = new TextWidget(entry.title(), MinecraftClient.getInstance().textRenderer);
+        textWidget.alignLeft();
+
+        Entry converted = new Entry(entry, entry.widget().get(), textWidget);
         if (!entry.children().isEmpty()) {
             converted.buttonWidget = Optional.of(ButtonWidget.builder(Text.literal("↑"), b -> {
                 converted.collapsed = Optional.of(!converted.collapsed.orElse(true));
@@ -70,17 +120,33 @@ public class EntryListWidget extends ContainerWidget {
 
     @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        int offsetY = getY();
-        int paddedX = getX() + 100;
-        int paddedWidth = getWidth() - 200;
+        int offsetY = getY() + (int) scrollOffset;
+        int startPos = offsetY;
+
+        int clampedWidth;
+        if (getWidth() >= 1000) {
+            clampedWidth = 950;
+        } else {
+            clampedWidth = getWidth() - 50;
+        }
+
+        int x = (getWidth() - clampedWidth) / 2;
+
+        context.enableScissor(getX(), getY(), getX() + getWidth(), getY() + getHeight());
 
         for (Entry entry : entries) {
-            offsetY += renderEntry(MinecraftClient.getInstance().textRenderer, context, entry, paddedX, offsetY, paddedWidth, mouseX, mouseY, delta) + 10;
+            offsetY += renderEntry(context, entry, x, offsetY, clampedWidth, mouseX, mouseY, delta) + 10;
         }
+
+        contentHeight = offsetY - startPos;
+        adjustScrollOffset();
+        context.disableScissor();
+
+        drawScrollbar(context, mouseX, mouseY);
     }
 
-    private int renderEntry(TextRenderer textRenderer, DrawContext context, Entry entry, int x, int y, int width, int mouseX, int mouseY, float delta) {
-        int localY = y + renderRow(textRenderer, context, entry, x, y, width, mouseX, mouseY, delta);
+    private int renderEntry(DrawContext context, Entry entry, int x, int y, int width, int mouseX, int mouseY, float delta) {
+        int localY = y + renderRow(context, entry, x, y, width, mouseX, mouseY, delta);
 
         boolean hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < localY;
         if (hovered && !entry.entry.description().getString().isEmpty()) {
@@ -89,14 +155,14 @@ public class EntryListWidget extends ContainerWidget {
 
         if (!entry.collapsed.orElse(true)) {
             for (Entry child : entry.children) {
-                localY += renderEntry(textRenderer, context, child, x + 20, localY, width - 20, mouseX, mouseY, delta);
+                localY += renderEntry(context, child, x + 20, localY, width - 20, mouseX, mouseY, delta);
             }
         }
 
         return localY - y;
     }
 
-    private int renderRow(TextRenderer textRenderer, DrawContext context, Entry entry, int x, int y, int width, int mouseX, int mouseY, float delta) {
+    private int renderRow(DrawContext context, Entry entry, int x, int y, int width, int mouseX, int mouseY, float delta) {
         final int height = 26;
         final int actualY = y + 3;
         final int actualHeight = height - 6;
@@ -113,12 +179,35 @@ public class EntryListWidget extends ContainerWidget {
 
         int color = entry.entry.hasChanged().get() ? Colors.GREEN : Colors.ALTERNATE_WHITE;
         context.fill(x, y, x + 3, y + height, ColorHelper.Argb.withAlpha(127, color));
-        context.drawTextWithShadow(textRenderer, entry.entry.title(), x + 10, actualY + (actualHeight - textRenderer.fontHeight) / 2, Colors.WHITE);
+
+        entry.textWidget.setDimensionsAndPosition(Math.max(0, width - (buttonWidth == 0 ? 0 : buttonWidth + 10) - 200 - 20), actualHeight, x + 10, actualY);
+        entry.textWidget.render(context, mouseX, mouseY, delta);
 
         return height;
     }
 
     @Override
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+    }
+
+    private void adjustScrollOffset() {
+        scrollOffset = Math.max(Math.min(scrollOffset, 0), Math.min(-(contentHeight - getHeight()), 0));
+    }
+
+    private void drawScrollbar(DrawContext context, int mouseX, int mouseY) {
+        if (contentHeight <= getHeight()) {
+            return;
+        }
+
+        int scrollbarHeight = (int) ((float) getHeight() / contentHeight * getHeight());
+        int scrollbarY = getY() - (int) (scrollOffset / contentHeight * getHeight());
+
+        int color = ColorHelper.Argb.getArgb(191, 128, 128, 128);
+        if (isMouseOverScrollbar(mouseX, mouseY)) {
+            color = ColorHelper.Argb.getArgb(255, 128, 128, 128);
+        }
+
+        int scrollbarX = getX() + getWidth() - 6;
+        context.fill(scrollbarX, scrollbarY, scrollbarX + 6, scrollbarY + scrollbarHeight, color);
     }
 }
