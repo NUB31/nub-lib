@@ -23,10 +23,10 @@ Here are the entries included in nub-lib:
 
 ```java
 public class ExampleConfig extends Config {
-    public IConfigEntry<Boolean> featureEnabled = new BooleanConfigEntry(storageProvider, "feature.enabled", false);
-    public IConfigEntry<String> featureName = new StringConfigEntry(storageProvider, "feature.name", "UwU");
-    public IConfigEntry<Integer> featureValue = new IntegerConfigEntry(storageProvider, "feature.value", 69);
-    public IConfigEntry<Option> featureOption = new EnumConfigEntry<>(storageProvider, "feature.option", Option.Option1);
+    public IConfigEntry<Boolean> featureEnabled = new BooleanConfigEntry(sp, "feature.enabled", false);
+    public IConfigEntry<String> featureName = new StringConfigEntry(sp, "feature.name", "UwU");
+    public IConfigEntry<Integer> featureValue = new IntegerConfigEntry(sp, "feature.value", 69);
+    public IConfigEntry<Option> featureOption = new EnumConfigEntry<>(sp, "feature.option", Option.Option1);
 
     public ExampleConfig(IStorageProvider storageProvider) {
         super(storageProvider);
@@ -98,10 +98,10 @@ and description arguments in addition to the standard ones.
 
 ```java
 public class ExampleConfig extends Config {
-    public final IClientConfigEntry<Boolean> featureEnabled = new ClientToggleConfigEntry(storageProvider, "feature.enabled", false, Text.translatable("..."), Text.translatable("..."));
-    public final IClientConfigEntry<String> featureName = new ClientStringConfigEntry(storageProvider, "feature.name", "UwU", Text.translatable("..."), Text.translatable("..."));
-    public final IClientConfigEntry<Integer> featureValue = new ClientRangeConfigEntry(storageProvider, "feature.value", 69, 0, 100, Text.translatable("..."), Text.translatable("..."));
-    public final IClientConfigEntry<Option> featureOption = new ClientEnumConfigEntry<>(storageProvider, "feature.option", Option.Option1, Text.translatable("..."), Text.translatable("..."), Option.class);
+    public final IClientConfigEntry<Boolean> featureEnabled = new ClientToggleConfigEntry(sp, "feature.enabled", false, Text.translatable("..."), Text.translatable("..."));
+    public final IClientConfigEntry<String> featureName = new ClientStringConfigEntry(sp, "feature.name", "UwU", Text.translatable("..."), Text.translatable("..."));
+    public final IClientConfigEntry<Integer> featureValue = new ClientRangeConfigEntry(sp, "feature.value", 69, 0, 100, Text.translatable("..."), Text.translatable("..."));
+    public final IClientConfigEntry<Option> featureOption = new ClientEnumConfigEntry<>(sp, "feature.option", Option.Option1, Text.translatable("..."), Text.translatable("..."), Option.class);
 
     public ExampleConfig(IStorageProvider storageProvider) {
         super(storageProvider);
@@ -148,18 +148,20 @@ public void onInitializeClient() {
 ### Add a keybinding to open your configuration screen
 
 ```java
+public Screen createConfigScreen(@Nullable Screen parent) {
+    return ConfigScreen
+            .builder()
+            .setParent(parent)
+            .onSave(this::save)
+            .fromConfig(Text.translatable("nub-lib.config.ui.title"), NubLibClient.CONFIG)
+            .build();
+}
 
 @Override
 public void onInitializeClient() {
     // Client initialization code...
 
-    Screen configScreen = ConfigScreen
-            .builder()
-            .fromConfig(Text.translatable("nub-lib.config.ui.title"), NubLibClient.CONFIG)
-            .onSave(CONFIG::save)
-            .build();
-
-    BindingUtil.bindScreenToKey(GLFW.GLFW_KEY_N, configScreen, "nub-lib.ui.open_config_page");
+    BindingUtil.bindScreenToKey(GLFW.GLFW_KEY_B, () -> createConfigScreen(null), "nub-lib.ui.open_config_page");
 }
 ```
 

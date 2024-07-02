@@ -38,26 +38,29 @@ public class ExampleConfig extends Config {
                 .build();
     }
 
-//    /**
-//     * Creates a screen based on a set of config entries that inherit from `IClientConfigEntry`.
-//     * This gives you more configurability than `fromConfig` at the cost of more manual work.
-//     * In this example, I put each config entry on a different page (tab)
-//     */
-//    public Screen createCustomScreenFromConfig(@Nullable Screen parent) {
-//        return ConfigScreen
-//                .builder()
-//                .setParent(parent)
-//                .onSave(this::save)
-//                .addPage(Text.literal("Tab 1"), page -> page
-//                        .addEntries(containerEntryBuilder -> {
-//                            containerEntryBuilder.fromConfigEntry(feature1Enabled);
-//                        }))
-//                .addPage(Text.literal("Tab 2"), page -> page
-//                        .addEntries(containerEntryBuilder -> {
-//                            containerEntryBuilder.fromConfigEntry(feature1Name);
-//                        }))
-//                .build();
-//    }
+    /**
+     * Creates a screen based on a set of config entries that inherit from `IClientConfigEntry`.
+     * This gives you more configurability than `fromConfig` at the cost of more manual work.
+     * In this example, I put each config group entry on a different page (tab)
+     */
+    public Screen createCustomScreenFromConfig(@Nullable Screen parent) {
+        return ConfigScreen
+                .builder()
+                .setParent(parent)
+                .onSave(this::save)
+                .addPage(Text.literal("Tab 1"), page -> page
+                        .addEntries(containerEntryBuilder -> {
+                            containerEntryBuilder.fromConfigEntry(feature1Name);
+                            containerEntryBuilder.fromConfigEntry(feature1Value);
+                        }))
+                .addPage(Text.literal("Tab 2"), page -> page
+                        .addEntries(containerEntryBuilder -> {
+                            containerEntryBuilder.fromConfigEntry(feature2Enabled);
+                            containerEntryBuilder.fromConfigEntry(feature2Name);
+                            containerEntryBuilder.fromConfigEntry(feature2Value);
+                        }))
+                .build();
+    }
 
     /**
      * Creates a screen that works with any config.
