@@ -3,7 +3,7 @@ package com.nublib.gui.widget.entry;
 import com.nublib.gui.widget.custom.MultiSelectWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 
-public class EnumGuiConfigEntryBuilder<T extends Enum<T>> extends AbstractGuiConfigEntryBuilder<T> {
+public class EnumGuiConfigEntryBuilder<T extends Enum<T>> extends GuiConfigEntryBuilder<T> {
     private final Class<T> enumClass;
 
     public EnumGuiConfigEntryBuilder(T defaultValue, Class<T> enumClass) {

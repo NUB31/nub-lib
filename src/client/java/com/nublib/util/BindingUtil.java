@@ -11,7 +11,7 @@ public class BindingUtil {
     public static void bindScreenToKey(int defaultKey, Supplier<Screen> screenSupplier, String translationKey, String category) {
         KeyBinding keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(translationKey, defaultKey, category));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (keyBinding.wasPressed()) {
+            if (keyBinding.wasPressed()) {
                 client.setScreen(screenSupplier.get());
             }
         });

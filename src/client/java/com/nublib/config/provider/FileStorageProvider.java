@@ -34,35 +34,33 @@ public class FileStorageProvider extends StorageProvider {
 
     private void loadFile() throws IOException {
         Scanner reader = new Scanner(file);
-        reader.forEachRemaining(line -> parseLine(line).ifPresent(kvp -> {
-            if (kvp.left.startsWith("keybinding-")) {
-                try {
-                    int keyCode = Integer.parseInt(kvp.right);
-                    keyBindings.put(kvp.left.replace("keybinding-", ""), keyCode);
-                } catch (NumberFormatException e) {
-                    NubLib.LOGGER.warn(String.format("failed to convert key code '%s' to an integer", kvp.left));
-                }
-            } else {
-                config.put(kvp.left, kvp.right);
-            }
-        }));
+        reader.forEachRemaining(line -> parseLine(line).ifPresent(kvp -> config.put(kvp.left, kvp.right)));
     }
 
     private Optional<Pair<String, String>> parseLine(String line) {
-        var cleansed = line.split("#")[0];
-        String[] kvp = cleansed.split("=");
-        if (kvp.length == 2) {
-            return Optional.of(new Pair<>(kvp[0].trim(), kvp[1].trim()));
+        try {
+            if (line.trim().startsWith("#")) {
+                return Optional.empty();
+            }
+
+            var cleansed = line.split("#")[0];
+            String[] kvp = cleansed.split("=");
+            if (kvp.length == 2) {
+                return Optional.of(new Pair<>(kvp[0].trim(), kvp[1].trim()));
+            }
+            return Optional.empty();
+        } catch (Exception e) {
+            NubLib.LOGGER.warn(String.format("failed to parse line '%s'. Error: %s", line, e.getMessage()));
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
     public void save(Map<String, String> options) {
         NubLib.LOGGER.info(String.format("Saving configuration file '%s'", file.getName()));
         final List<String> content = new ArrayList<>();
+        content.add("# Values");
         config.forEach((k, v) -> content.add(String.format("%s=%s", k, v)));
-        keyBindings.forEach((k, v) -> content.add(String.format("keybinding-%s=%s", k, v.toString())));
 
         try {
             Files.writeString(file.toPath(), String.join("\n", content));

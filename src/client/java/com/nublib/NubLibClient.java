@@ -13,6 +13,6 @@ public class NubLibClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        BindingUtil.bindScreenToKey(GLFW.GLFW_KEY_M, () -> CONFIG.createConfigScreen(null), "nub-lib.config.ui.key.show_example_config_screen_3");
+        BindingUtil.bindScreenToKey(GLFW.GLFW_KEY_M, () -> CONFIG.createConfigScreen(null), "nub-lib.config.ui.key.show_example_config_screen");
     }
 }
