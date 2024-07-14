@@ -5,12 +5,12 @@ import com.nublib.config.provider.IStorageProvider;
 
 import java.util.Optional;
 
-public abstract class AbstractConfigEntry<T> implements IConfigEntry<T> {
+public abstract class ConfigEntry<T> implements IConfigEntry<T> {
     protected IStorageProvider storageProvider;
     protected T defaultValue;
     protected String key;
 
-    public AbstractConfigEntry(IStorageProvider storageProvider, String key, T defaultValue) {
+    public ConfigEntry(IStorageProvider storageProvider, String key, T defaultValue) {
         this.storageProvider = storageProvider;
         this.defaultValue = defaultValue;
         this.key = key;
@@ -29,6 +29,11 @@ public abstract class AbstractConfigEntry<T> implements IConfigEntry<T> {
         } else {
             return defaultValue;
         }
+    }
+
+    @Override
+    public String getKey() {
+        return key;
     }
 
     @Override

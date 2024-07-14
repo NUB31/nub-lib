@@ -1,6 +1,5 @@
 package com.nublib.gui;
 
-import com.nublib.config.entry.IClientConfigEntry;
 import com.nublib.gui.widget.entry.*;
 
 import java.util.ArrayList;
@@ -51,11 +50,6 @@ public class EntryListBuilder {
         EnumGuiConfigEntryBuilder<T> builder = new EnumGuiConfigEntryBuilder<>(defaultValue, enumClass);
         builderConsumer.accept(builder);
         addConfigEntry(builder.build());
-        return this;
-    }
-
-    public EntryListBuilder fromConfigEntry(IClientConfigEntry<?> entry) {
-        addConfigEntry(entry.guiConfigEntry());
         return this;
     }
 
