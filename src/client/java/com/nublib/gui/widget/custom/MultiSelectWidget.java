@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class MultiSelectWidget<T extends Enum<T>> extends Widget {
+public class MultiSelectWidget<T extends Enum<T>> extends AbstractCustomWidget {
     private final Consumer<T> onChange;
     private final List<T> values;
     private T value;

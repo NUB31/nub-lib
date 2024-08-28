@@ -4,7 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 
-public class StringGuiConfigEntryBuilder extends GuiConfigEntryBuilder<String> {
+public class StringGuiConfigEntryBuilder extends AbstractGuiConfigEntryBuilder<String> {
     public StringGuiConfigEntryBuilder(String defaultValue) {
         super(defaultValue);
     }

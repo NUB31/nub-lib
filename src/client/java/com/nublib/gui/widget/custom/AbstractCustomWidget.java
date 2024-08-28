@@ -7,8 +7,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.ColorHelper;
 
-public abstract class Widget extends ClickableWidget {
-    public Widget(int x, int y, int width, int height) {
+public abstract class AbstractCustomWidget extends ClickableWidget {
+    public AbstractCustomWidget(int x, int y, int width, int height) {
         super(x, y, width, height, Text.empty());
     }
 

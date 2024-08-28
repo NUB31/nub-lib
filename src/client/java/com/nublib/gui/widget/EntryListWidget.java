@@ -85,10 +85,10 @@ public class EntryListWidget extends ContainerWidget {
 
         Entry converted = new Entry(entry, entry.widget().get(), textWidget);
         if (!entry.children().isEmpty()) {
-            converted.buttonWidget = Optional.of(ButtonWidget.builder(Text.literal("→"), b -> {
+            converted.buttonWidget = Optional.of(ButtonWidget.builder(Text.literal("↑"), b -> {
                 converted.collapsed = Optional.of(!converted.collapsed.orElse(true));
                 if (converted.collapsed.get()) {
-                    b.setMessage(Text.literal("→"));
+                    b.setMessage(Text.literal("↑"));
                 } else {
                     b.setMessage(Text.literal("↓"));
                 }

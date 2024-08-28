@@ -5,7 +5,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
-public class RangeGuiConfigEntryBuilder extends GuiConfigEntryBuilder<Integer> {
+public class RangeGuiConfigEntryBuilder extends AbstractGuiConfigEntryBuilder<Integer> {
     private final Integer minValue;
     private final Integer maxValue;
 

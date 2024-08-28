@@ -8,15 +8,13 @@ import com.nublib.config.entry.StringConfigEntry;
 import com.nublib.config.provider.IStorageProvider;
 import com.nublib.gui.ConfigScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 public class ExampleConfig extends Config {
     public final IConfigEntry<String> feature1Name = new StringConfigEntry(sp, "feature1.name", "Feature 1");
     public final IConfigEntry<Integer> feature1Value = new IntegerConfigEntry(sp, "feature1.value", 25);
-    public final IConfigEntry<Boolean> feature2Enabled = new BooleanConfigEntry(sp, "feature2.enabled", true, new KeyBinding("nub-lib.config.feature2.enabled.title", InputUtil.UNKNOWN_KEY.getCode(), "nub-lib"));
+    public final IConfigEntry<Boolean> feature2Enabled = new BooleanConfigEntry(sp, "feature2.enabled", true);
     public final IConfigEntry<String> feature2Name = new StringConfigEntry(sp, "feature2.name", "Feature 2");
     public final IConfigEntry<Integer> feature2Value = new IntegerConfigEntry(sp, "feature2.value", 25);
 
@@ -45,6 +43,7 @@ public class ExampleConfig extends Config {
                                                         .onChange(feature1Value::set))
                                         ))
                                 .addToggle(feature2Enabled.get(), toggleBuilder -> toggleBuilder
+                                        .addKeyBinding(sp.getKeybinding(feature2Enabled.getKey()), (key) -> sp.setKeybinding(feature2Enabled.getKey(), key))
                                         .setTitle(Text.translatable("nub-lib.config.feature2.enabled.title"))
                                         .setDescription(Text.translatable("nub-lib.config.feature2.enabled.description"))
                                         .onChange(feature2Enabled::set)

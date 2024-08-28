@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class GuiConfigEntryBuilder<T> {
+public abstract class AbstractGuiConfigEntryBuilder<T> {
     protected Text title;
     protected Text description;
     protected Consumer<T> onChange;
@@ -16,7 +16,7 @@ public abstract class GuiConfigEntryBuilder<T> {
     protected List<GuiConfigEntry> configEntries;
     private Boolean hasChanged = false;
 
-    public GuiConfigEntryBuilder(T defaultValue) {
+    public AbstractGuiConfigEntryBuilder(T defaultValue) {
         this.title = Text.empty();
         this.description = Text.empty();
         this.defaultValue = defaultValue;
@@ -24,17 +24,17 @@ public abstract class GuiConfigEntryBuilder<T> {
         this.onChange = (v) -> this.hasChanged = !v.equals(defaultValue);
     }
 
-    public GuiConfigEntryBuilder<T> setTitle(Text title) {
+    public AbstractGuiConfigEntryBuilder<T> setTitle(Text title) {
         this.title = title;
         return this;
     }
 
-    public GuiConfigEntryBuilder<T> setDescription(Text description) {
+    public AbstractGuiConfigEntryBuilder<T> setDescription(Text description) {
         this.description = description;
         return this;
     }
 
-    public GuiConfigEntryBuilder<T> onChange(Consumer<T> delegate) {
+    public AbstractGuiConfigEntryBuilder<T> onChange(Consumer<T> delegate) {
         onChange = (v) -> {
             this.hasChanged = !v.equals(defaultValue);
             delegate.accept(v);
@@ -42,7 +42,7 @@ public abstract class GuiConfigEntryBuilder<T> {
         return this;
     }
 
-    public GuiConfigEntryBuilder<T> addChildEntries(Consumer<EntryListBuilder> delegate) {
+    public AbstractGuiConfigEntryBuilder<T> addChildEntries(Consumer<EntryListBuilder> delegate) {
         EntryListBuilder entryListBuilder = new EntryListBuilder();
         delegate.accept(entryListBuilder);
         configEntries.addAll(entryListBuilder.getConfigEntries());
