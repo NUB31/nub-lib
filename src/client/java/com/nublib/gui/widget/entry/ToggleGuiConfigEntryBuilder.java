@@ -1,29 +1,23 @@
 package com.nublib.gui.widget.entry;
 
-import com.nublib.gui.widget.custom.ToggleWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
-import java.util.function.Consumer;
+import net.minecraft.screen.ScreenTexts;
 
 public class ToggleGuiConfigEntryBuilder extends AbstractGuiConfigEntryBuilder<Boolean> {
-    @Nullable
-    private Consumer<Integer> onKeyChanged = null;
-    private Optional<Integer> keyCode = Optional.empty();
+    private Boolean value;
 
     public ToggleGuiConfigEntryBuilder(Boolean defaultValue) {
         super(defaultValue);
-    }
-
-    public ToggleGuiConfigEntryBuilder addKeyBinding(Optional<Integer> keyCode, Consumer<Integer> onKeyChanged) {
-        this.onKeyChanged = onKeyChanged;
-        this.keyCode = keyCode;
-        return this;
+        value = defaultValue;
     }
 
     @Override
     public ClickableWidget createWidget() {
-        return new ToggleWidget(defaultValue, onChange, onKeyChanged, keyCode);
+        return ButtonWidget.builder(ScreenTexts.onOrOff(value), (b) -> {
+            value = !value;
+            onChange.accept(value);
+            b.setMessage(ScreenTexts.onOrOff(value));
+        }).build();
     }
 }

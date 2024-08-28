@@ -7,7 +7,5 @@ public interface IConfigEntry<T> {
 
     T get();
 
-    String getKey();
-
     void reset();
 }

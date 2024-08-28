@@ -13,5 +13,7 @@
   "nub-lib.config.feature2.name.description": "Determines the name of feature 2",
   "nub-lib.config.feature2.value.title": "Feature 2 value",
   "nub-lib.config.feature2.value.description": "Determines the value of feature 2",
-  "nub-lib.config.ui.key.show_example_config_screen": "Show example config screen"
+  "nub-lib.config.ui.key.show_example_config_screen_1": "Show example first config screen",
+  "nub-lib.config.ui.key.show_example_config_screen_2": "Show example second config screen",
+  "nub-lib.config.ui.key.show_example_config_screen_3": "Show example third config screen"
 }

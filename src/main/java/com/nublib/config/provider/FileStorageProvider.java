@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 
-public class FileStorageProvider extends StorageProvider {
+public class FileStorageProvider extends AbstractStorageProvider {
     private final File file;
 
     private FileStorageProvider(File file) {
@@ -34,18 +34,7 @@ public class FileStorageProvider extends StorageProvider {
 
     private void loadFile() throws IOException {
         Scanner reader = new Scanner(file);
-        reader.forEachRemaining(line -> parseLine(line).ifPresent(kvp -> {
-            if (kvp.left.startsWith("keybinding-")) {
-                try {
-                    int keyCode = Integer.parseInt(kvp.right);
-                    keyBindings.put(kvp.left.replace("keybinding-", ""), keyCode);
-                } catch (NumberFormatException e) {
-                    NubLib.LOGGER.warn(String.format("failed to convert key code '%s' to an integer", kvp.left));
-                }
-            } else {
-                config.put(kvp.left, kvp.right);
-            }
-        }));
+        reader.forEachRemaining(line -> parseLine(line).ifPresent(kvp -> config.put(kvp.left, kvp.right)));
     }
 
     private Optional<Pair<String, String>> parseLine(String line) {
@@ -62,7 +51,6 @@ public class FileStorageProvider extends StorageProvider {
         NubLib.LOGGER.info(String.format("Saving configuration file '%s'", file.getName()));
         final List<String> content = new ArrayList<>();
         config.forEach((k, v) -> content.add(String.format("%s=%s", k, v)));
-        keyBindings.forEach((k, v) -> content.add(String.format("keybinding-%s=%s", k, v.toString())));
 
         try {
             Files.writeString(file.toPath(), String.join("\n", content));
