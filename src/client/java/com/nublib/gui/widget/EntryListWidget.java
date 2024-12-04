@@ -64,6 +64,16 @@ public class EntryListWidget extends ContainerWidget {
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
+    @Override
+    protected int getContentsHeightWithPadding() {
+        return 0;
+    }
+
+    @Override
+    protected double getDeltaYPerScroll() {
+        return 0;
+    }
+
     private boolean isMouseOverScrollbar(double mouseX, double mouseY) {
         int scrollbarX = getX() + getWidth() - 6;
         return mouseX >= scrollbarX && mouseX < scrollbarX + 6 && mouseY >= getY() && mouseY < getY() + getHeight();
@@ -178,7 +188,7 @@ public class EntryListWidget extends ContainerWidget {
         entry.widget.render(context, mouseX, mouseY, delta);
 
         int color = entry.entry.hasChanged().get() ? Colors.GREEN : Colors.ALTERNATE_WHITE;
-        context.fill(x, y, x + 3, y + height, ColorHelper.Argb.withAlpha(127, color));
+        context.fill(x, y, x + 3, y + height, ColorHelper.withAlpha(127, color));
 
         entry.textWidget.setDimensionsAndPosition(Math.max(0, width - (buttonWidth == 0 ? 0 : buttonWidth + 10) - 200 - 20), actualHeight, x + 10, actualY);
         entry.textWidget.render(context, mouseX, mouseY, delta);
@@ -202,9 +212,9 @@ public class EntryListWidget extends ContainerWidget {
         int scrollbarHeight = (int) ((float) getHeight() / contentHeight * getHeight());
         int scrollbarY = getY() - (int) (scrollOffset / contentHeight * getHeight());
 
-        int color = ColorHelper.Argb.getArgb(191, 128, 128, 128);
+        int color = ColorHelper.getArgb(191, 128, 128, 128);
         if (isMouseOverScrollbar(mouseX, mouseY)) {
-            color = ColorHelper.Argb.getArgb(255, 128, 128, 128);
+            color = ColorHelper.getArgb(255, 128, 128, 128);
         }
 
         int scrollbarX = getX() + getWidth() - 6;

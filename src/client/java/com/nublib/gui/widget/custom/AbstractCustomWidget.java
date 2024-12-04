@@ -24,7 +24,7 @@ public abstract class AbstractCustomWidget extends ClickableWidget {
         int height = getHeight();
 
         int fillColorAlpha = isHovered() ? 63 : 31;
-        context.fill(x, y, x + width, y + height, ColorHelper.Argb.withAlpha(fillColorAlpha, Colors.WHITE));
+        context.fill(x, y, x + width, y + height, ColorHelper.withAlpha(fillColorAlpha, Colors.WHITE));
         int borderColor = isHovered() ? Colors.ALTERNATE_WHITE : Colors.LIGHT_GRAY;
         context.drawBorder(x, y, width, height, borderColor);
 
